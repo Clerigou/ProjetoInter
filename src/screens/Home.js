@@ -1,10 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const Home = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('CadastroPets')}>
+        <Text>Home</Text>
+      </TouchableOpacity>
     </View>
   );
 };

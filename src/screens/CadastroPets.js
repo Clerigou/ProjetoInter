@@ -1,13 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import storage from '@react-native-firebase/storage';
 
 export default function CadastroPets() {
-  const [imagemEscolhida, setImagemEscolhida] = useState({});
+  const [imagemEscolhida, setImagemEscolhida] = useState([]);
 
-  async function openPicker() {
-    await ImagePicker.openPicker({
+  function openPicker() {
+    ImagePicker.openPicker({
       width: 350,
       height: 450,
       cropping: true,
@@ -23,8 +23,6 @@ export default function CadastroPets() {
         console.log(err);
       });
   }
-
-  console.log(imagemEscolhida);
 
   async function enviar() {
     const reference = storage().ref(`imagesteste/${imagemEscolhida.name}`);
