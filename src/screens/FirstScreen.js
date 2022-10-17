@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  StatusBar,
 } from 'react-native';
 
 import {colors} from '../commonStyles';
@@ -13,6 +14,10 @@ import {colors} from '../commonStyles';
 const FirstScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
+      <StatusBar
+        backgroundColor={colors.background_primary_dark}
+        barStyle={'light-content'}
+      />
       <ImageBackground
         source={require('../../assets/images/Primeira_tela_background.png')}
         style={styles.container_back_img}
@@ -55,6 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.background_primary,
   },
   container_back_img: {
     flex: 1,
@@ -67,21 +73,18 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
   },
   body: {
     flex: 1,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
   },
   footer: {
     flex: 1.5,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
   },
   botao: {
     width: '40%',

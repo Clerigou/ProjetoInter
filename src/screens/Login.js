@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Image,
 } from 'react-native';
+import {colors} from '../commonStyles';
 
 export default Login = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -46,41 +47,49 @@ export default Login = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
-
-      <View style={styles.header}>
-        <View style={styles.imgContainer}>
-          <Image />
-        </View>
-      </View>
-
-      <View style={styles.body}>
-        <View style={styles.bodyInputs}>
-          <TextInput
-            style={styles.input}
-            placeholder="Login..."
-            fontSize={15}
-            keyboardType="email-address"
-            onChangeText={Text => {
-              setEmail(Text);
-            }}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha..."
-            onChangeText={Text => {
-              setPassword(Text);
-            }}
-            fontSize={15}
-            keyboardType="default"
-            secureTextEntry={true}
-          />
-
-          <Pressable onPress={logando}>
-            <Text> botão aqui</Text>
+      <ImageBackground
+        source={require('../../assets/images/Segunda_tela_background.png')}
+        style={styles.container_back_img}
+        resizeMode={'stretch'}>
+        <View style={styles.body}>
+          <View style={styles.bodyInputs}>
+            <TextInput
+              style={styles.input}
+              placeholder="EMAIL"
+              placeholderTextColor={colors.text}
+              fontSize={15}
+              keyboardType="email-address"
+              onChangeText={Text => {
+                setEmail(Text);
+              }}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="SENHA"
+              onChangeText={Text => {
+                setPassword(Text);
+              }}
+              placeholderTextColor={colors.text}
+              fontSize={15}
+              keyboardType="default"
+              secureTextEntry={true}
+            />
+          </View>
+          <Pressable style={styles.esqueci_senha_button}>
+            <Text style={styles.esqueci_senha_text}> Esqueci minha senha</Text>
           </Pressable>
+
+          <Pressable style={styles.login_button} onPress={logando}>
+            <Text style={styles.login_button_text}> Entrar </Text>
+          </Pressable>
+
+          <Image
+            source={require('../../assets/images/Segunda_tela_IMG.png')}
+            resizeMode={'stretch'}
+            style={styles.img_bottom}
+          />
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -91,10 +100,56 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: {},
-  imgContainer: {},
-  img: {},
-  body: {},
-  bodyInputs: {},
-  input: {},
+  container_back_img: {
+    width: '100%',
+    flex: 1,
+  },
+  body: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bodyInputs: {
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  input: {
+    width: '70%',
+    borderRadius: 30,
+    paddingVertical: 13,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    backgroundColor: colors.input,
+  },
+  esqueci_senha_button: {
+    borderWidth: 1,
+    transform: [{translateX: 55}],
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  esqueci_senha_text: {
+    color: colors.TextInput,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  login_button: {
+    backgroundColor: colors.input,
+    width: '20%',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  login_button_text: {
+    fontSize: 20,
+    color: colors.text,
+  },
+  img_bottom: {
+    width: '100%',
+    height: '60%',
+  },
 });
