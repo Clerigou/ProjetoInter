@@ -8,6 +8,8 @@ import {
   Image,
 } from 'react-native';
 
+import {colors} from '../commonStyles';
+
 const FirstScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
@@ -16,18 +18,34 @@ const FirstScreen = ({navigation}) => {
         style={styles.container_back_img}
         resizeMode={'stretch'}>
         <View style={styles.header}>
-          <Image />
+          <Image
+            source={require('../../assets/images/Icone_Segunda_Chance_PetLar.png')}
+            resizeMode={'contain'}
+            style={{width: '55%'}}
+          />
         </View>
 
         <View style={styles.body}>
           <Image
-            style={{borderWidth: 1, width: '70%'}}
+            style={{borderWidth: 1, width: '75%'}}
             source={require('../../assets/images/Primeira_tela_IMG.png')}
             resizeMode={'contain'}
           />
         </View>
 
-        <View style={styles.footer}></View>
+        <View style={styles.footer}>
+          <Text style={{color: 'white', fontSize: 25, textAlign: 'center'}}>
+            Dê uma segunda{'\n'}
+            chance para o pet e {'\n'}
+            para você!
+          </Text>
+
+          <TouchableOpacity
+            style={styles.botao}
+            onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.botao_text}> Explore </Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
     </View>
   );
@@ -64,6 +82,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
+  },
+  botao: {
+    width: '40%',
+    height: 50,
+    borderRadius: 30,
+    backgroundColor: colors.input,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  botao_text: {
+    color: 'white',
+    fontSize: 26,
   },
 });
 
