@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.input,
   },
   esqueci_senha_button: {
-    borderWidth: 1,
     transform: [{translateX: 55}],
     height: 35,
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 7,
   },
   esqueci_senha_text: {
     color: colors.TextInput,
@@ -138,15 +138,16 @@ const styles = StyleSheet.create({
   },
   login_button: {
     backgroundColor: colors.input,
-    width: '20%',
+    width: '40%',
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 15,
   },
   login_button_text: {
     fontSize: 20,
     color: colors.text,
+    fontWeight: 'bold',
   },
   img_bottom: {
     width: '100%',

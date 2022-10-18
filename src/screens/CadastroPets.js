@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import storage from '@react-native-firebase/storage';
@@ -47,7 +47,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 24,
   },
+
   button: {
     borderWidth: 1,
     width: '100%',
