@@ -12,6 +12,7 @@ import {
   Image,
 } from 'react-native';
 import {colors} from '../commonStyles';
+import TopBarGeral from '../components/TopBarGeral';
 
 export default Login = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -51,30 +52,32 @@ export default Login = ({navigation}) => {
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}
         resizeMode={'stretch'}>
+        <TopBarGeral navigation={navigation} buttonRight={'logout'} />
         <View style={styles.body}>
-          <View style={styles.bodyInputs}>
-            <TextInput
-              style={styles.input}
-              placeholder="EMAIL"
-              placeholderTextColor={colors.text}
-              fontSize={15}
-              keyboardType="email-address"
-              onChangeText={Text => {
-                setEmail(Text);
-              }}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="SENHA"
-              onChangeText={Text => {
-                setPassword(Text);
-              }}
-              placeholderTextColor={colors.text}
-              fontSize={15}
-              keyboardType="default"
-              secureTextEntry={true}
-            />
+          <View style={styles.titulo_container}>
+            <Text style={styles.titulo}> Acesse sua conta </Text>
           </View>
+          <TextInput
+            style={styles.input}
+            placeholder="EMAIL"
+            placeholderTextColor={colors.text}
+            fontSize={15}
+            keyboardType="email-address"
+            onChangeText={Text => {
+              setEmail(Text);
+            }}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="SENHA"
+            onChangeText={Text => {
+              setPassword(Text);
+            }}
+            placeholderTextColor={colors.text}
+            fontSize={15}
+            keyboardType="default"
+            secureTextEntry={true}
+          />
           <Pressable style={styles.esqueci_senha_button}>
             <Text style={styles.esqueci_senha_text}> Esqueci minha senha</Text>
           </Pressable>
@@ -82,10 +85,11 @@ export default Login = ({navigation}) => {
           <Pressable style={styles.login_button} onPress={logando}>
             <Text style={styles.login_button_text}> Entrar </Text>
           </Pressable>
-
+        </View>
+        <View style={styles.img_container}>
           <Image
             source={require('../../assets/images/Segunda_tela_IMG.png')}
-            resizeMode={'stretch'}
+            resizeMode={'cover'}
             style={styles.img_bottom}
           />
         </View>
@@ -103,18 +107,25 @@ const styles = StyleSheet.create({
   container_back_img: {
     width: '100%',
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   body: {
     flex: 1,
     width: '100%',
     alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  titulo_container: {
+    width: '100%',
+    marginBottom: 15,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  bodyInputs: {
-    width: '100%',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+  titulo: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: colors.input,
   },
   input: {
     width: '70%',
@@ -129,7 +140,7 @@ const styles = StyleSheet.create({
     height: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 7,
+    margin: 2,
   },
   esqueci_senha_text: {
     color: colors.TextInput,
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
   },
   login_button: {
     backgroundColor: colors.input,
-    width: '40%',
+    width: '35%',
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -149,8 +160,13 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontWeight: 'bold',
   },
+  img_container: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'flex-end',
+  },
   img_bottom: {
     width: '100%',
-    height: '60%',
+    height: '80%',
   },
 });
