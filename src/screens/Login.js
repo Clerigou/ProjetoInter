@@ -52,7 +52,7 @@ export default Login = ({navigation}) => {
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}
         resizeMode={'stretch'}>
-        <TopBarGeral navigation={navigation} buttonRight={'logout'} />
+        <TopBarGeral navigation={navigation} />
         <View style={styles.body}>
           <View style={styles.titulo_container}>
             <Text style={styles.titulo}> Acesse sua conta </Text>

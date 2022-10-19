@@ -2,10 +2,10 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import Login from './screens/Login';
-import Home from './screens/Home';
-import CadastroPets from './screens/CadastroPets';
-import FirstScreen from './screens/FirstScreen';
+import Login from '../screens/Login';
+import Home from '../screens/Home';
+import CadastroPets from '../screens/CadastroPets';
+import FirstScreen from '../screens/FirstScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +20,7 @@ function StackAppNavigator() {
   );
 }
 
-export default function Navegacao() {
+export default function Routes() {
   return (
     <NavigationContainer>
       <StackAppNavigator />

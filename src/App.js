@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Navegacao from './Navigator';
+import Routes from './routes/Routes';
 
 const App = () => {
-  return <Navegacao />;
+  return <Routes />;
 };
 
 export default App;
