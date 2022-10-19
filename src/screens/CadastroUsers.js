@@ -11,7 +11,7 @@ import {
   Pressable,
 } from 'react-native';
 import {colors} from '../commonStyles';
-
+import getAuth from '@react-native-firebase/auth';
 import TopBarGeral from '../components/TopBarGeral';
 
 export default function CadastroUsers() {
@@ -22,6 +22,24 @@ export default function CadastroUsers() {
   const [telefone, setTelefone] = useState();
   const [email, setEmail] = useState();
   const [senha, setSenha] = useState();
+
+  function createUser() {
+    getAuth()
+      .createUser({
+        email: email,
+        emailVerified: false,
+        password: senha,
+        displayName: nome,
+        disabled: false,
+      })
+      .then(userRecord => {
+        // See the UserRecord reference doc for the contents of userRecord.
+        console.log('Successfully created new user:', userRecord.uid);
+      })
+      .catch(error => {
+        console.log('Error creating new user:', error);
+      });
+  }
 
   return (
     <View style={styles.container}>
@@ -47,6 +65,7 @@ export default function CadastroUsers() {
               placeholder="Nome"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              onChangeText={text => setNome(text)}
             />
             <View style={styles.body_inputs_row}>
               <TextInput
@@ -82,11 +101,13 @@ export default function CadastroUsers() {
               placeholder="E-mail"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              onChangeText={text => setEmail(text)}
             />
             <TextInput
               placeholder="Senha"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              onChangeText={text => setSenha(text)}
             />
 
             <Pressable style={styles.button}>

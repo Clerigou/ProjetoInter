@@ -5,8 +5,11 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import Home from '../screens/Home';
 import CadastroPets from '../screens/CadastroPets';
+import CadastroUsers from '../screens/CadastroUsers';
 import FirstScreen from '../screens/FirstScreen';
 import CadastroUsuarioLista from '../screens/CadastroUsuarioLista';
+
+import AuthProvider from '../contexts/auth';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +19,7 @@ function StackAppNavigator() {
       <Stack.Screen name="FirstScreen" component={FirstScreen} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="CadastroUsers" component={CadastroUsers} />
       <Stack.Screen name="CadastroPets" component={CadastroPets} />
       <Stack.Screen
         name="CadastroUsuarioLista"
@@ -28,7 +32,9 @@ function StackAppNavigator() {
 export default function Routes() {
   return (
     <NavigationContainer>
-      <StackAppNavigator />
+      <AuthProvider>
+        <StackAppNavigator />
+      </AuthProvider>
     </NavigationContainer>
   );
 }
