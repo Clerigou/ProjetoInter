@@ -1,6 +1,14 @@
 import React from 'react';
 
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  StatusBar,
+} from 'react-native';
 import {colors} from '../commonStyles';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,7 +18,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 export default function TopBarGeral({navigation, homeButton, buttonRight}) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.left}>
         <Pressable onPress={() => navigation.goBack()} style={styles.round}>
           <FoundationIcons
@@ -48,7 +56,7 @@ export default function TopBarGeral({navigation, homeButton, buttonRight}) {
           </>
         ) : null}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -58,6 +66,7 @@ const styles = StyleSheet.create({
     height: 65,
     flexDirection: 'row',
     paddingHorizontal: 12,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   left: {
     flex: 1,

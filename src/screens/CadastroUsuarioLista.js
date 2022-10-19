@@ -11,7 +11,7 @@ import {
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
 
-const Home = ({navigation}) => {
+const CadastroUsuarioLista = ({navigation}) => {
   return (
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
   containerTextIntro: {
     paddingLeft: 30,
     marginBottom: 20,
-    marginTop: 20,
   },
   textIntro: {
     color: colors.background_primary_dark,
@@ -101,4 +100,4 @@ const styles = StyleSheet.create({
 {
 }
 
-export default Home;
+export default CadastroUsuarioLista;
