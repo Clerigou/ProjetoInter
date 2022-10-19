@@ -7,6 +7,8 @@ import Home from '../screens/Home';
 import CadastroPets from '../screens/CadastroPets';
 import FirstScreen from '../screens/FirstScreen';
 
+import AuthProvider from '../contexts/auth';
+
 const Stack = createNativeStackNavigator();
 
 function StackAppNavigator() {
@@ -23,7 +25,9 @@ function StackAppNavigator() {
 export default function Routes() {
   return (
     <NavigationContainer>
-      <StackAppNavigator />
+      <AuthProvider>
+        <StackAppNavigator />
+      </AuthProvider>
     </NavigationContainer>
   );
 }

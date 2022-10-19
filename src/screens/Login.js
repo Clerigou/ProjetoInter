@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {
   View,
@@ -11,12 +11,16 @@ import {
   ImageBackground,
   Image,
 } from 'react-native';
+
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
+
+import {AuthContext} from '../contexts/auth';
 
 export default Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const {user, setUser} = useContext(AuthContext);
 
   useEffect(() => {}, []);
 
@@ -27,7 +31,9 @@ export default Login = ({navigation}) => {
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(res => {
-        navigation.navigate('CadastroPets');
+        console.log(res);
+        setUser(res);
+        navigation.navigate('Home');
       })
       .catch(error => {
         if (error.code === 'auth/invalid-email') {
