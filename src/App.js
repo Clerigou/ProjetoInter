@@ -1,10 +1,19 @@
 import React from 'react';
 
 import Routes from './routes/Routes';
-import Home from './screens/Home';
-
+import {WithSplashScreen} from './SplachScreen';
 const App = () => {
-  return <Routes />;
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  useEffect(() => {
+    setIsAppReady(true);
+  }, []);
+
+  return (
+    <WithSplashScreen isAppReady={isAppReady}>
+      <Routes />
+    </WithSplashScreen>
+  );
 };
 
 export default App;

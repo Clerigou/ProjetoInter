@@ -21,6 +21,7 @@ function StackAppNavigator() {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="CadastroUsers" component={CadastroUsers} />
       <Stack.Screen name="CadastroPets" component={CadastroPets} />
+      <Stack.Screen name="CadastroUsers" component={CadastroUsers} />
       <Stack.Screen
         name="CadastroUsuarioLista"
         component={CadastroUsuarioLista}

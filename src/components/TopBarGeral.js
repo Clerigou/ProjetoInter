@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 65,
     flexDirection: 'row',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   left: {
