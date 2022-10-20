@@ -17,6 +17,7 @@ const FirstScreen = ({navigation}) => {
       <StatusBar
         backgroundColor={colors.background_primary_dark}
         barStyle={'light-content'}
+        hidden={true}
       />
       <ImageBackground
         source={require('../../assets/images/Primeira_tela_background.png')}

@@ -28,9 +28,15 @@ const Home = ({navigation}) => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.botao}>
-          <Text style={styles.botao_text}>Cadastro Pets</Text>
+          <Text
+            onPress={() => navigation.navigate('CadastroUsers')}
+            style={styles.botao_text}>
+            Cadastro Pets
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.botao}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CadastroUsers')}
+          style={styles.botao}>
           <Text style={styles.botao_text}>Cadastros Usuários</Text>
         </TouchableOpacity>
       </View>

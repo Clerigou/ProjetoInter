@@ -1,5 +1,5 @@
 import {transform} from '@babel/core';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   ImageBackground,
@@ -10,9 +10,14 @@ import {
   Text,
   Pressable,
 } from 'react-native';
+
 import {colors} from '../commonStyles';
 import getAuth from '@react-native-firebase/auth';
 import TopBarGeral from '../components/TopBarGeral';
+
+import firebase from '@react-native-firebase/app';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export default function CadastroUsers() {
   const [nome, setNome] = useState('');
@@ -22,22 +27,56 @@ export default function CadastroUsers() {
   const [telefone, setTelefone] = useState();
   const [email, setEmail] = useState();
   const [senha, setSenha] = useState();
+  useEffect(() => {
+    createSecondaryApp();
+  }, []);
 
-  function createUser() {
-    getAuth()
-      .createUser({
-        email: email,
-        emailVerified: false,
-        password: senha,
-        displayName: nome,
-        disabled: false,
-      })
-      .then(userRecord => {
-        // See the UserRecord reference doc for the contents of userRecord.
-        console.log('Successfully created new user:', userRecord.uid);
-      })
-      .catch(error => {
-        console.log('Error creating new user:', error);
+  async function createSecondaryApp() {
+    const apps = firebase.apps;
+
+    if (apps[0]._name === '[DEFAULT]') {
+      const credentials = {
+        clientId:
+          '133998181481-1t2b9uku7vq759skano9o3ieng2l8tq8.apps.googleusercontent.com',
+        appId: 'com.petlar',
+        apiKey: 'AIzaSyB5vWTi-gqTlrVhzi9RYyYFGo7x3pnxjPs',
+        databaseURL: 'https://segunda-chance-pet-lar.firebaseio.com/',
+        storageBucket: 'segunda-chance-pet-lar.appspot.com',
+        messagingSenderId: '133998181481',
+        projectId: 'segunda-chance-pet-lar',
+      };
+
+      const config = {
+        name: 'SECONDARY_APP',
+      };
+
+      await firebase.initializeApp(credentials, config);
+    }
+  }
+
+  async function createUser() {
+    // Your secondary Firebase project credentials...
+
+    firebase
+      .app('SECONDARY_APP')
+      .auth()
+      .createUserWithEmailAndPassword(email, senha)
+      .then(res => {
+        console.log(res, 'then do criar usar');
+        firestore()
+          .collection('Users')
+          .doc(email)
+          .set({
+            name: nome,
+            cep: cep,
+            cpf: cpf,
+            nascimento: nascimento,
+            telefone: telefone,
+            email: email,
+          })
+          .then(() => {
+            console.log('User criado com sucesso!');
+          });
       });
   }
 
@@ -72,11 +111,13 @@ export default function CadastroUsers() {
                 style={styles.inputs_row}
                 placeholder="CEP"
                 placeholderTextColor={colors.text}
+                onChangeText={text => setCep(text)}
               />
               <TextInput
                 style={styles.inputs_row}
                 placeholder="Data de nasc"
                 placeholderTextColor={colors.text}
+                onChangeText={text => setNascimento(text)}
               />
             </View>
             <View style={styles.body_inputs_row}>
@@ -84,11 +125,13 @@ export default function CadastroUsers() {
                 style={styles.inputs_row}
                 placeholder="CPF"
                 placeholderTextColor={colors.text}
+                onChangeText={text => setCpf(text)}
               />
               <TextInput
                 style={styles.inputs_row}
                 placeholder="Telefone"
                 placeholderTextColor={colors.text}
+                onChangeText={text => setTelefone(text)}
               />
             </View>
 
@@ -110,7 +153,7 @@ export default function CadastroUsers() {
               onChangeText={text => setSenha(text)}
             />
 
-            <Pressable style={styles.button}>
+            <Pressable onPress={createUser} style={styles.button}>
               <Text style={styles.button_text}>Enviar</Text>
             </Pressable>
           </View>
