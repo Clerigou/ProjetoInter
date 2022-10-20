@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
+import {verticalScale, moderateScale} from 'react-native-size-matters';
 
 export function WithSplashScreen({children, isAppReady}) {
   return (
@@ -11,8 +12,8 @@ export function WithSplashScreen({children, isAppReady}) {
   );
 }
 
-const LOADING_IMAGE = 'Loading image';
-const FADE_IN_IMAGE = 'Fade in image';
+const WAITING = 'waiting animation';
+const STARTING_ANIMATION = 'Fade in image';
 const WAIT_FOR_APP_TO_BE_READY = 'Wait for app to be ready';
 const FADE_OUT = 'Fade out';
 const HIDDEN = 'Hidden';
@@ -24,21 +25,13 @@ export const Splash = ({isAppReady}) => {
   const pawTwo = useRef(new Animated.Value(0)).current;
   const pawThree = useRef(new Animated.Value(0)).current;
   const pawFour = useRef(new Animated.Value(0)).current;
-  const pawFive = useRef(new Animated.Value(0)).current;
   const pawSix = useRef(new Animated.Value(0)).current;
+  const pawFive = useRef(new Animated.Value(0)).current;
   const pawFinalSize = useRef(new Animated.Value(0)).current;
 
   const imagem = require('../assets/images/Pata.png');
 
-  const [state, setState] = useState(LOADING_IMAGE);
-
-  // function one() {
-  //   Animated.timing(pawOne, {
-  //     toValue: 1,
-  //     duration: 200,
-  //     useNativeDriver: true,
-  //   }).start(two);
-  // }
+  const [state, setState] = useState(WAITING);
 
   function two() {
     Animated.timing(pawTwo, {
@@ -63,20 +56,20 @@ export const Splash = ({isAppReady}) => {
     }).start(five);
   }
   function five() {
-    Animated.timing(pawFive, {
+    Animated.timing(pawSix, {
       toValue: 1,
       duration: 200,
       useNativeDriver: true,
     }).start(six);
   }
   function six() {
-    Animated.timing(pawSix, {
+    Animated.timing(pawFive, {
       toValue: 1,
       duration: 200,
       useNativeDriver: false,
-    }).start(ultima);
+    }).start(fadeout);
   }
-  function ultima() {
+  function fadeout() {
     Animated.parallel([
       Animated.timing(pawOne, {
         toValue: 0,
@@ -98,7 +91,7 @@ export const Splash = ({isAppReady}) => {
         duration: 200,
         useNativeDriver: true,
       }),
-      Animated.timing(pawFive, {
+      Animated.timing(pawSix, {
         toValue: 0,
         duration: 200,
         useNativeDriver: true,
@@ -109,18 +102,22 @@ export const Splash = ({isAppReady}) => {
         friction: 7,
         useNativeDriver: false,
       }),
-    ]).start(() => {
+    ]).start(lastFunction);
+  }
+
+  function lastFunction() {
+    Animated.spring(pawFinalSize, {
+      toValue: 2,
+      tension: 100,
+      friction: 7,
+      useNativeDriver: false,
+    }).start(() => {
       setState(WAIT_FOR_APP_TO_BE_READY);
     });
   }
 
   useEffect(() => {
-    if (state === FADE_IN_IMAGE) {
-      // Animated.timing(imageOpacity, {
-      //   toValue: 1,
-      //   duration: 1000, // Fade in duration
-      //   useNativeDriver: true,
-      // }).start(one);
+    if (state === STARTING_ANIMATION) {
       Animated.timing(pawOne, {
         toValue: 1,
         duration: 200,
@@ -158,35 +155,36 @@ export const Splash = ({isAppReady}) => {
       style={[styles.container, {opacity: containerOpacity}]}>
       <View style={styles.container_um}></View>
 
-      <View style={styles.container_dois}>
+      <Animated.View style={styles.container_dois}>
+        <Animated.Image
+          style={[styles.pawSix, {opacity: pawSix}]}
+          source={imagem}
+        />
         <Animated.Image
           style={[
-            styles.pawSix,
-            {opacity: pawSix},
+            styles.pawFive,
+            {opacity: pawFive},
             {
               width: pawFinalSize.interpolate({
-                inputRange: [0, 1],
-                outputRange: [70, 200],
+                inputRange: [0, 1, 2],
+                outputRange: [70, 200, moderateScale(1000)],
               }),
             },
             {
               height: pawFinalSize.interpolate({
-                inputRange: [0, 1],
-                outputRange: [70, 200],
+                inputRange: [0, 1, 2],
+                outputRange: [70, 200, moderateScale(1000)],
               }),
             },
+            {transform: [{translateY: verticalScale(-180)}]},
           ]}
-          source={imagem}
-        />
-        <Animated.Image
-          style={[styles.pawFive, {opacity: pawFive}]}
           source={imagem}
         />
         <Animated.Image
           style={[styles.pawFour, {opacity: pawFour}]}
           source={imagem}
         />
-      </View>
+      </Animated.View>
       <View style={styles.container_tres}>
         <Animated.Image
           style={[styles.pawThree, {opacity: pawThree}]}
@@ -199,7 +197,7 @@ export const Splash = ({isAppReady}) => {
         <Animated.Image
           style={[styles.pawOne, {opacity: pawOne}]}
           onLoad={() => {
-            setState(FADE_IN_IMAGE);
+            setState(STARTING_ANIMATION);
           }}
           source={imagem}
           resizeMode="contain"
@@ -222,48 +220,42 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    // borderWidth: 1,
   },
   container_dois: {
     width: '100%',
-    flex: 2,
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    // borderWidth: 1,
+    justifyContent: 'space-evenly',
   },
   container_tres: {
     width: '100%',
-    flex: 2,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    // borderWidth: 1,
+    flex: 1.5,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
   pawOne: {
     width: 70,
     height: 70,
-    transform: [{translateY: 15}],
+    transform: [{translateX: 90}],
   },
   pawTwo: {
     width: 70,
     height: 70,
-    transform: [{translateX: 150}],
+    transform: [{translateX: -90}],
   },
   pawThree: {
     width: 70,
     height: 70,
-    transform: [{translateY: -20}],
+    transform: [{translateX: 90}],
   },
   pawFour: {
     width: 70,
     height: 70,
-    transform: [{translateY: 30}],
-  },
-  pawFive: {
-    width: 70,
-    height: 70,
-    transform: [{translateX: -120}],
+    transform: [{translateX: -90}],
   },
   pawSix: {
-    transform: [{translateY: -40}],
+    width: 70,
+    height: 70,
+    transform: [{translateX: 90}],
   },
 });
