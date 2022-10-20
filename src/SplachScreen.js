@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
-import AnimatedLottieView from 'lottie-react-native';
 
 export function WithSplashScreen({children, isAppReady}) {
   return (
@@ -28,6 +27,8 @@ export const Splash = ({isAppReady}) => {
   const pawFive = useRef(new Animated.Value(0)).current;
   const pawSix = useRef(new Animated.Value(0)).current;
   const pawFinalSize = useRef(new Animated.Value(0)).current;
+
+  const imagem = require('../assets/images/Pata.png');
 
   const [state, setState] = useState(LOADING_IMAGE);
 
@@ -175,32 +176,32 @@ export const Splash = ({isAppReady}) => {
               }),
             },
           ]}
-          source={require('../assets/images/pata.png')}
+          source={imagem}
         />
         <Animated.Image
           style={[styles.pawFive, {opacity: pawFive}]}
-          source={require('../assets/images/pata.png')}
+          source={imagem}
         />
         <Animated.Image
           style={[styles.pawFour, {opacity: pawFour}]}
-          source={require('../assets/images/pata.png')}
+          source={imagem}
         />
       </View>
       <View style={styles.container_tres}>
         <Animated.Image
           style={[styles.pawThree, {opacity: pawThree}]}
-          source={require('../assets/images/pata.png')}
+          source={imagem}
         />
         <Animated.Image
           style={[styles.pawTwo, {opacity: pawTwo}]}
-          source={require('../assets/images/pata.png')}
+          source={imagem}
         />
         <Animated.Image
           style={[styles.pawOne, {opacity: pawOne}]}
           onLoad={() => {
             setState(FADE_IN_IMAGE);
           }}
-          source={require('../assets/images/pata.png')}
+          source={imagem}
           resizeMode="contain"
         />
       </View>
