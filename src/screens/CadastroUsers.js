@@ -12,14 +12,14 @@ import {
 } from 'react-native';
 
 import {colors} from '../commonStyles';
-import getAuth from '@react-native-firebase/auth';
 import TopBarGeral from '../components/TopBarGeral';
 
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
-export default function CadastroUsers() {
+export default function CadastroUsers({navigation}) {
   const [nome, setNome] = useState('');
   const [cep, setCep] = useState();
   const [cpf, setCpf] = useState();
@@ -73,6 +73,7 @@ export default function CadastroUsers() {
             nascimento: nascimento,
             telefone: telefone,
             email: email,
+            admin: false,
           })
           .then(() => {
             console.log('User criado com sucesso!');
@@ -85,7 +86,11 @@ export default function CadastroUsers() {
       <ImageBackground
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}>
-        <TopBarGeral homeButton={true} />
+        <TopBarGeral
+          navigation={navigation}
+          backButton={true}
+          homeButton={true}
+        />
         <View style={styles.header}>
           <Text style={styles.header_text}> Cadastro de {'\n'} Usuarios</Text>
         </View>
@@ -104,18 +109,21 @@ export default function CadastroUsers() {
               placeholder="Nome"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              fontSize={18}
               onChangeText={text => setNome(text)}
             />
             <View style={styles.body_inputs_row}>
               <TextInput
                 style={styles.inputs_row}
                 placeholder="CEP"
+                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCep(text)}
               />
               <TextInput
                 style={styles.inputs_row}
                 placeholder="Data de nasc"
+                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setNascimento(text)}
               />
@@ -124,12 +132,14 @@ export default function CadastroUsers() {
               <TextInput
                 style={styles.inputs_row}
                 placeholder="CPF"
+                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCpf(text)}
               />
               <TextInput
                 style={styles.inputs_row}
                 placeholder="Telefone"
+                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setTelefone(text)}
               />
@@ -144,12 +154,14 @@ export default function CadastroUsers() {
               placeholder="E-mail"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              fontSize={18}
               onChangeText={text => setEmail(text)}
             />
             <TextInput
               placeholder="Senha"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              fontSize={18}
               onChangeText={text => setSenha(text)}
             />
 
@@ -158,31 +170,9 @@ export default function CadastroUsers() {
             </Pressable>
           </View>
         </ScrollView>
-        <View
-          style={{
-            flex: 0.25,
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              zIndex: 1,
-              transform: [{translateY: 110}],
-              fontSize: 35,
-              color: colors.text,
-            }}>
-            Usuarios
-          </Text>
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 90,
-              height: 115,
-              borderRadius: 120 / 2,
-              backgroundColor: colors.background_primary_dark,
-              transform: [{scaleX: 5}, {translateY: 50}],
-            }}></View>
+        <View style={styles.footer}>
+          <Text style={styles.footer_text}>Usuarios</Text>
+          <View style={styles.footer_oval}></View>
         </View>
       </ImageBackground>
     </View>
@@ -199,12 +189,12 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    paddingLeft: 28,
-    paddingTop: 2,
-    paddingBottom: 15,
+    paddingLeft: scale(28),
+    paddingTop: verticalScale(5),
+    paddingBottom: verticalScale(15),
   },
   header_text: {
-    fontSize: 30,
+    fontSize: moderateScale(32),
     color: colors.input,
     fontWeight: 'bold',
   },
@@ -219,20 +209,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 15,
+    marginBottom: verticalScale(15),
   },
   inputs: {
     width: '80%',
-    height: 42,
+    height: verticalScale(50),
     borderRadius: 20,
     paddingHorizontal: 10,
-    marginBottom: 15,
+    marginBottom: verticalScale(15),
     backgroundColor: colors.input,
     fontSize: 16,
   },
   inputs_row: {
     width: '48%',
-    height: 42,
+    height: verticalScale(46),
     borderRadius: 20,
     paddingHorizontal: 10,
     backgroundColor: colors.input,
@@ -240,7 +230,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '30%',
-    height: 42,
+    height: verticalScale(45),
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
@@ -248,7 +238,27 @@ const styles = StyleSheet.create({
   },
   button_text: {
     color: colors.text,
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
+  },
+  footer: {
+    flex: 0.25,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  footer_text: {
+    zIndex: 1,
+    transform: [{translateY: verticalScale(110)}],
+    fontSize: 35,
+    color: colors.text,
+  },
+  footer_oval: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: scale(90),
+    height: verticalScale(125),
+    borderRadius: 120 / 2,
+    backgroundColor: colors.background_primary_dark,
+    transform: [{scaleX: scale(4)}, {translateY: verticalScale(50)}],
   },
 });

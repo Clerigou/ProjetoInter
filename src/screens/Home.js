@@ -139,11 +139,11 @@ const styles = StyleSheet.create({
   imageDogs: {
     width: '100%',
     height: '100%',
-    transform: [{translateY: verticalScale(30)}],
+    transform: [{translateY: verticalScale(25)}],
   },
   elementBottomImage: {
     width: '100%',
-    height: '50%',
+    height: '45%',
     position: 'absolute',
     zIndex: 1,
   },

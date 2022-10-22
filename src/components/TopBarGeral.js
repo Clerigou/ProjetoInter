@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FoundationIcons from 'react-native-vector-icons/Foundation';
 import MCicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
 export default function TopBarGeral({
   navigation,
@@ -29,7 +30,7 @@ export default function TopBarGeral({
           <Pressable onPress={() => navigation.goBack()} style={styles.round}>
             <FoundationIcons
               name="arrow-left"
-              size={22}
+              size={26}
               color={colors.background_secundary}
             />
           </Pressable>
@@ -39,7 +40,7 @@ export default function TopBarGeral({
           <Pressable style={styles.round}>
             <Ionicons
               name="ios-home"
-              size={22}
+              size={26}
               color={colors.background_secundary}
             />
           </Pressable>
@@ -58,7 +59,7 @@ export default function TopBarGeral({
               </Pressable>
             ) : buttonRight === 'search' ? (
               <Pressable style={styles.roundRight}>
-                <EvilIcons name="search" size={30} color={colors.text} />
+                <EvilIcons name="search" size={35} color={colors.text} />
               </Pressable>
             ) : null}
           </>
@@ -71,9 +72,9 @@ export default function TopBarGeral({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 60,
+    height: verticalScale(60),
     flexDirection: 'row',
-    paddingHorizontal: 10,
+    paddingHorizontal: scale(10),
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingBottom: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
@@ -94,8 +95,8 @@ const styles = StyleSheet.create({
   round: {
     backgroundColor: colors.background_primary_dark,
     borderRadius: 120 / 2,
-    width: 38,
-    height: 38,
+    width: moderateScale(40),
+    height: moderateScale(40),
     marginLeft: 5,
     alignItems: 'center',
     justifyContent: 'center',
@@ -103,15 +104,15 @@ const styles = StyleSheet.create({
   roundRight: {
     backgroundColor: colors.background_primary_dark,
     borderRadius: 120 / 2,
-    width: 38,
-    height: 38,
+    width: moderateScale(40),
+    height: moderateScale(40),
     marginRight: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   logout: {
-    width: 38,
-    height: 38,
+    width: scale(40),
+    height: verticalScale(40),
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 5,
