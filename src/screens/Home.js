@@ -16,11 +16,7 @@ const Home = ({navigation}) => {
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
-      <StatusBar
-        hidden
-        //         backgroundColor={colors.background_secundary}
-        //         barStyle={'light-content'}
-      />
+      <StatusBar hidden />
       <TopBarGeral buttonRight={'logout'} />
       <View style={styles.containerTextIntro}>
         <Text style={styles.textUser}>Oi, Gabriel</Text>
@@ -29,7 +25,7 @@ const Home = ({navigation}) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.botao}>
           <Text
-            onPress={() => navigation.navigate('CadastroUsers')}
+            onPress={() => navigation.navigate('CadastroPets')}
             style={styles.botao_text}>
             Cadastro Pets
           </Text>

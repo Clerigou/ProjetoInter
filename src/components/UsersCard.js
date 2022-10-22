@@ -4,7 +4,6 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../commonStyles';
 
 export default function UsersCard({user, handleZoomModal}) {
-  console.log(user.Nome.length);
   return (
     <View style={styles.container}>
       <Text style={styles.textCards}>
