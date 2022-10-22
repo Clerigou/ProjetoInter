@@ -16,17 +16,25 @@ import FoundationIcons from 'react-native-vector-icons/Foundation';
 import MCicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
-export default function TopBarGeral({navigation, homeButton, buttonRight}) {
+export default function TopBarGeral({
+  navigation,
+  backButton,
+  homeButton,
+  buttonRight,
+}) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.left}>
-        <Pressable onPress={() => navigation.goBack()} style={styles.round}>
-          <FoundationIcons
-            name="arrow-left"
-            size={22}
-            color={colors.background_secundary}
-          />
-        </Pressable>
+        {backButton ? (
+          <Pressable onPress={() => navigation.goBack()} style={styles.round}>
+            <FoundationIcons
+              name="arrow-left"
+              size={22}
+              color={colors.background_secundary}
+            />
+          </Pressable>
+        ) : null}
+
         {homeButton ? (
           <Pressable style={styles.round}>
             <Ionicons
