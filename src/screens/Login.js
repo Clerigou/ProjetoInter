@@ -52,11 +52,8 @@ export default Login = ({navigation}) => {
     ]).start();
   }, []);
 
-  useEffect(() => {
-    loginAnimation();
-  }, [user]);
-
   function loginAnimation() {
+    setLoading(false);
     Animated.parallel([
       Animated.timing(inputTop.x, {
         toValue: -1000,
@@ -78,8 +75,11 @@ export default Login = ({navigation}) => {
 
   async function logando() {
     if (!email || !password) {
+      setLoading(false);
       return Alert.alert('Email ou senha vazio', 'preencha todos os campos!');
     }
+    setLoading(true);
+
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(async () => {
@@ -94,6 +94,7 @@ export default Login = ({navigation}) => {
             console.log('segundo then do login', res);
 
             setUser(res);
+            loginAnimation();
           });
       })
       .catch(error => {
