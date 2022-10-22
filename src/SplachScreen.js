@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, StyleSheet, View} from 'react-native';
-import {verticalScale, moderateScale} from 'react-native-size-matters';
+import {Animated, ImageBackground, StyleSheet, View} from 'react-native';
+import {verticalScale, scale} from 'react-native-size-matters';
 
 export function WithSplashScreen({children, isAppReady}) {
   return (
@@ -153,56 +153,64 @@ export const Splash = ({isAppReady}) => {
     <Animated.View
       collapsable={false}
       style={[styles.container, {opacity: containerOpacity}]}>
-      <View style={styles.container_um}></View>
+      <ImageBackground
+        style={styles.container}
+        source={require('../assets/images/Segunda_tela_background.png')}>
+        <View style={styles.container_um}></View>
 
-      <Animated.View style={styles.container_dois}>
-        <Animated.Image
-          style={[styles.pawSix, {opacity: pawSix}]}
-          source={imagem}
-        />
-        <Animated.Image
-          style={[
-            styles.pawFive,
-            {opacity: pawFive},
-            {
-              width: pawFinalSize.interpolate({
-                inputRange: [0, 1, 2],
-                outputRange: [70, 200, moderateScale(1000)],
-              }),
-            },
-            {
-              height: pawFinalSize.interpolate({
-                inputRange: [0, 1, 2],
-                outputRange: [70, 200, moderateScale(1000)],
-              }),
-            },
-            {transform: [{translateY: verticalScale(-180)}]},
-          ]}
-          source={imagem}
-        />
-        <Animated.Image
-          style={[styles.pawFour, {opacity: pawFour}]}
-          source={imagem}
-        />
-      </Animated.View>
-      <View style={styles.container_tres}>
-        <Animated.Image
-          style={[styles.pawThree, {opacity: pawThree}]}
-          source={imagem}
-        />
-        <Animated.Image
-          style={[styles.pawTwo, {opacity: pawTwo}]}
-          source={imagem}
-        />
-        <Animated.Image
-          style={[styles.pawOne, {opacity: pawOne}]}
-          onLoad={() => {
-            setState(STARTING_ANIMATION);
-          }}
-          source={imagem}
-          resizeMode="contain"
-        />
-      </View>
+        <Animated.View style={styles.container_dois}>
+          <Animated.Image
+            style={[styles.pawSix, {opacity: pawSix}]}
+            source={imagem}
+          />
+          <Animated.Image
+            style={[
+              styles.pawFive,
+              {opacity: pawFive},
+              {
+                width: pawFinalSize.interpolate({
+                  inputRange: [0, 1, 2],
+                  outputRange: [scale(70), scale(200), scale(1000)],
+                }),
+              },
+              {
+                height: pawFinalSize.interpolate({
+                  inputRange: [0, 1, 2],
+                  outputRange: [
+                    verticalScale(70),
+                    verticalScale(200),
+                    verticalScale(1000),
+                  ],
+                }),
+              },
+              {transform: [{translateY: verticalScale(-180)}]},
+            ]}
+            source={imagem}
+          />
+          <Animated.Image
+            style={[styles.pawFour, {opacity: pawFour}]}
+            source={imagem}
+          />
+        </Animated.View>
+        <View style={styles.container_tres}>
+          <Animated.Image
+            style={[styles.pawThree, {opacity: pawThree}]}
+            source={imagem}
+          />
+          <Animated.Image
+            style={[styles.pawTwo, {opacity: pawTwo}]}
+            source={imagem}
+          />
+          <Animated.Image
+            style={[styles.pawOne, {opacity: pawOne}]}
+            onLoad={() => {
+              setState(STARTING_ANIMATION);
+            }}
+            source={imagem}
+            resizeMode="contain"
+          />
+        </View>
+      </ImageBackground>
     </Animated.View>
   );
 };
@@ -213,7 +221,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2096be',
   },
   container_um: {
     width: '100%',
@@ -234,28 +241,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   pawOne: {
-    width: 70,
-    height: 70,
-    transform: [{translateX: 90}],
+    width: scale(70),
+    height: verticalScale(70),
+    transform: [{translateX: scale(90)}],
   },
   pawTwo: {
     width: 70,
     height: 70,
-    transform: [{translateX: -90}],
+    transform: [{translateX: scale(-90)}],
   },
   pawThree: {
     width: 70,
     height: 70,
-    transform: [{translateX: 90}],
+    transform: [{translateX: scale(90)}],
   },
   pawFour: {
     width: 70,
     height: 70,
-    transform: [{translateX: -90}],
+    transform: [{translateX: scale(-90)}],
   },
   pawSix: {
     width: 70,
     height: 70,
-    transform: [{translateX: 90}],
+    transform: [{translateX: scale(90)}],
   },
 });
