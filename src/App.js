@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
 import Routes from './routes/Routes';
-import Home from './screens/Home';
-import CadastroUsuarioLista from './screens/CadastroUsuarioLista';
-import CadastroPetsLista from './screens/CadastroPetsLista';
-
+import {WithSplashScreen} from './SplachScreen';
 const App = () => {
-  return <CadastroPetsLista />;
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  useEffect(() => {
+    setIsAppReady(true);
+  }, []);
+
+  return (
+    <WithSplashScreen isAppReady={isAppReady}>
+      <Routes />
+    </WithSplashScreen>
+  );
 };
 
 export default App;

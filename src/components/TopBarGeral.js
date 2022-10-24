@@ -63,10 +63,11 @@ export default function TopBarGeral({navigation, homeButton, buttonRight}) {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 65,
+    height: 60,
     flexDirection: 'row',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   left: {
     flex: 1,
