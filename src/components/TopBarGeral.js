@@ -17,11 +17,13 @@ import MCicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
+const size = StatusBar.currentHeight / 2;
+
 export default function TopBarGeral({
   navigation,
   backButton,
-  homeButton,
   buttonRight,
+  logOut,
 }) {
   return (
     <SafeAreaView style={styles.container}>
@@ -35,22 +37,12 @@ export default function TopBarGeral({
             />
           </Pressable>
         ) : null}
-
-        {homeButton ? (
-          <Pressable style={styles.round}>
-            <Ionicons
-              name="ios-home"
-              size={26}
-              color={colors.background_secundary}
-            />
-          </Pressable>
-        ) : null}
       </View>
       <View style={styles.right}>
         {buttonRight ? (
           <>
             {buttonRight === 'logout' ? (
-              <Pressable style={styles.logout}>
+              <Pressable onPress={logOut} style={styles.logout}>
                 <MCicons
                   name="logout"
                   size={40}
@@ -76,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: scale(10),
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    paddingBottom: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === 'android' ? size : 0,
   },
   left: {
     flex: 1,

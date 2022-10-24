@@ -1,5 +1,5 @@
 import {transform} from '@babel/core';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 
 import {
   ImageBackground,
@@ -9,10 +9,12 @@ import {
   TextInput,
   Text,
   Pressable,
+  Animated,
 } from 'react-native';
 
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
+import {AuthContext} from '../contexts/auth';
 
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
@@ -20,6 +22,8 @@ import firestore from '@react-native-firebase/firestore';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
 export default function CadastroUsers({navigation}) {
+  const {opacity} = useContext(AuthContext);
+
   const [nome, setNome] = useState('');
   const [cep, setCep] = useState();
   const [cpf, setCpf] = useState();
@@ -29,12 +33,16 @@ export default function CadastroUsers({navigation}) {
   const [senha, setSenha] = useState();
   useEffect(() => {
     createSecondaryApp();
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
   async function createSecondaryApp() {
     const apps = firebase.apps;
-
-    if (apps[0]._name === '[DEFAULT]') {
+    if (apps.length <= 1) {
       const credentials = {
         clientId:
           '133998181481-1t2b9uku7vq759skano9o3ieng2l8tq8.apps.googleusercontent.com',
@@ -55,8 +63,6 @@ export default function CadastroUsers({navigation}) {
   }
 
   async function createUser() {
-    // Your secondary Firebase project credentials...
-
     firebase
       .app('SECONDARY_APP')
       .auth()

@@ -1,4 +1,5 @@
-import React, {useContext} from 'react';
+import {transform} from '@babel/core';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,16 +8,102 @@ import {
   StatusBar,
   ImageBackground,
   Image,
+  Animated,
 } from 'react-native';
 import {scale, verticalScale} from 'react-native-size-matters';
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
-
+import auth from '@react-native-firebase/auth';
 import {AuthContext} from '../contexts/auth';
 
 const Home = ({navigation}) => {
-  const {user} = useContext(AuthContext);
-  console.log(user, 'user do home');
+  const {user, opacity} = useContext(AuthContext);
+  const [selected, setSelected] = useState(0);
+  const [boxOne] = useState(new Animated.ValueXY({x: 0, y: -1000}));
+  const [boxTwo] = useState(new Animated.ValueXY({x: 0, y: -1000}));
+  const [boxThree] = useState(new Animated.ValueXY({x: 0, y: -1000}));
+  const [boxFour] = useState(new Animated.ValueXY({x: 0, y: -1000}));
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(boxFour, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(boxThree, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(boxTwo, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(boxOne, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  function handlePress(rota) {
+    Animated.timing(opacity, {
+      toValue: 0,
+      duration: 400,
+      useNativeDriver: true,
+    }).start(() => {
+      switch (rota) {
+        case 1:
+          navigation.navigate('CadastroPets');
+          break;
+        case 2:
+          navigation.navigate('CadastroUsers');
+          break;
+        case 3:
+          navigation.navigate('Pets');
+          break;
+        case 4:
+          navigation.navigate('CadastroUsuarioLista');
+          break;
+
+        default:
+          console.log('error gigantesco');
+
+          break;
+      }
+    });
+  }
+
+  function logOut() {
+    Animated.parallel([
+      Animated.timing(boxOne, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(boxTwo, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(boxThree, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(boxFour, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }
+  auth()
+    .signOut()
+    .then(() => console.log('User signed out!'));
 
   return (
     <ImageBackground
@@ -29,36 +116,70 @@ const Home = ({navigation}) => {
       </View>
       {user.admin ? (
         <View style={styles.buttonContainer}>
-          <View style={styles.buttons}>
-            <TouchableOpacity style={styles.botao}>
-              <Text
-                onPress={() => navigation.navigate('Pets')}
-                style={styles.botao_text}>
-                Lista de Pets
-              </Text>
-            </TouchableOpacity>
+          <Animated.View
+            style={[
+              styles.animated_view,
+              {transform: [{translateY: boxOne.y}]},
+              {opacity: selected === 1 ? 1 : opacity},
+            ]}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Users')}
-              style={styles.botao}>
-              <Text style={styles.botao_text}>Lista de Usuários</Text>
+              style={styles.botao}
+              onPress={() => {
+                setSelected(1);
+                handlePress(1);
+              }}>
+              <Text style={styles.botao_text}>Cadastro Pets</Text>
             </TouchableOpacity>
-          </View>
-          <View style={styles.buttons}>
-            <TouchableOpacity style={styles.botao}>
-              <Text
-                onPress={() => navigation.navigate('CadastroPets')}
-                style={styles.botao_text}>
-                Cadastro Pets
-              </Text>
-            </TouchableOpacity>
+          </Animated.View>
+          <Animated.View
+            style={[
+              styles.animated_view,
+              {transform: [{translateY: boxTwo.y}]},
+              {opacity: selected === 2 ? 1 : opacity},
+            ]}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('CadastroUsers')}
+              onPress={() => {
+                setSelected(3);
+                handlePress(3);
+              }}
               style={styles.botao}>
               <Text style={styles.botao_text}>Cadastro Usuários</Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
+
+          <Animated.View
+            style={[
+              styles.animated_view,
+              {transform: [{translateY: boxThree.y}]},
+              {opacity: selected === 3 ? 1 : opacity},
+            ]}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelected(2);
+                handlePress(2);
+              }}
+              style={styles.botao}>
+              <Text style={styles.botao_text}>Lista de Pets</Text>
+            </TouchableOpacity>
+          </Animated.View>
+          <Animated.View
+            style={[
+              styles.animated_view,
+              {transform: [{translateY: boxFour.y}]},
+              {opacity: selected === 4 ? 1 : opacity},
+            ]}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelected(4);
+                handlePress(4);
+              }}
+              style={styles.botao}>
+              <Text style={styles.botao_text}>Lista de Usuários</Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       ) : (
+        // </View>
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.botao}>
             <Text
@@ -97,8 +218,8 @@ const styles = StyleSheet.create({
   },
   containerTextIntro: {
     paddingLeft: scale(30),
-    marginBottom: verticalScale(20),
-    marginTop: verticalScale(20),
+    marginBottom: verticalScale(15),
+    marginTop: verticalScale(5),
   },
   textIntro: {
     color: colors.background_primary_dark,
@@ -108,16 +229,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
     width: '100%',
   },
-  buttons: {
-    flex: 1,
+  animated_view: {
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   botao: {
-    width: '90%',
+    width: '60%',
     height: verticalScale(55),
     borderRadius: 20,
     paddingVertical: verticalScale(10),
