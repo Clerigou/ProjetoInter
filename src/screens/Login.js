@@ -93,7 +93,7 @@ export default Login = ({navigation}) => {
           .then(res => {
             console.log('segundo then do login', res);
 
-            setUser(res);
+            setUser(res._data);
             loginAnimation();
           });
       })
@@ -120,7 +120,7 @@ export default Login = ({navigation}) => {
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}
         resizeMode={'stretch'}>
-        <TopBarGeral navigation={navigation} />
+        <TopBarGeral backButton={true} navigation={navigation} />
         <Animated.View style={styles.body}>
           <Animated.View style={[styles.titulo_container, {opacity: opacity}]}>
             <Text style={styles.titulo}> Acesse sua conta </Text>
@@ -134,7 +134,7 @@ export default Login = ({navigation}) => {
               style={styles.input}
               placeholder="EMAIL"
               placeholderTextColor={colors.text}
-              fontSize={18}
+              fontSize={16}
               keyboardType="email-address"
               onChangeText={Text => {
                 setEmail(Text);
@@ -153,7 +153,7 @@ export default Login = ({navigation}) => {
                 setPassword(Text);
               }}
               placeholderTextColor={colors.text}
-              fontSize={18}
+              fontSize={16}
               keyboardType="default"
               secureTextEntry={true}
             />

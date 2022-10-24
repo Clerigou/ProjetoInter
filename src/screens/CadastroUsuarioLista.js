@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,43 +7,74 @@ import {
   ImageBackground,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
 import UsersCard from '../components/UsersCard';
 import ListEmpty from '../components/ListEmpty';
+import firestore from '@react-native-firebase/firestore';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CadastroUsuarioLista = ({navigation}) => {
   const [zoomModal, setZoomModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleZoomModal = user => {
     setZoomModal(!zoomModal);
     setCurrentUser(user);
   };
 
-  const Values = [
-    {
-      Nome: 'Gabriel Monteiro',
-      Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
-      CEP: '54100-320',
-      Data: '10/01/2004',
-      CPF: '138.934.255-43',
-      Numero: '(81)98374-3234',
-      Email: 'gabrielm@gmail.com',
-    },
-    {
-      Nome: 'Gabrielx',
-      Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
-      CEP: '54100-320',
-      Data: '10/01/2004',
-      CPF: '138.934.255-43',
-      Numero: '(81)98374-3234',
-      Email: 'gabrielm@gmail.com',
-    },
-  ];
+  // const Values = [
+  //   {
+  //     Nome: 'Gabriel Monteiro',
+  //     Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
+  //     CEP: '54100-320',
+  //     Data: '10/01/2004',
+  //     CPF: '138.934.255-43',
+  //     Numero: '(81)98374-3234',
+  //     Email: 'gabrielm@gmail.com',
+  //   },
+  //   {
+  //     Nome: 'Gabrielx',
+  //     Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
+  //     CEP: '54100-320',
+  //     Data: '10/01/2004',
+  //     CPF: '138.934.255-43',
+  //     Numero: '(81)98374-3234',
+  //     Email: 'gabrielm@gmail.com',
+  //   },
+  // ];
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('Users')
+      .onSnapshot(querySnapshot => {
+        const users = [];
+
+        querySnapshot.forEach(documentSnapshot => {
+          users.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+
+        setData(users);
+        setLoading(false);
+      });
+
+    // Unsubscribe from events when no longer in use
+    return () => subscriber();
+  }, []);
+
+  console.log(data);
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
 
   return (
     <ImageBackground
@@ -58,7 +89,7 @@ const CadastroUsuarioLista = ({navigation}) => {
       <View style={styles.cardContainer}>
         <FlatList
           numColumns={2}
-          data={Values}
+          data={data}
           keyExtractor={item => item}
           renderItem={({item}) => (
             <UsersCard
@@ -73,7 +104,7 @@ const CadastroUsuarioLista = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
             {paddingBottom: 100},
-            Values.length === 0 && {flex: 1},
+            data.length === 0 && {flex: 1},
           ]}
         />
       </View>
