@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -27,7 +27,7 @@ const FirstScreen = ({navigation}) => {
           <Image
             source={require('../../assets/images/Icone_Segunda_Chance_PetLar.png')}
             resizeMode={'contain'}
-            style={{width: '55%'}}
+            style={{width: '65%'}}
           />
         </View>
 

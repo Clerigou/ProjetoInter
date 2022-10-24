@@ -16,12 +16,11 @@ const Stack = createNativeStackNavigator();
 function StackAppNavigator() {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="CadastroUsers" component={CadastroUsers} />
-
       <Stack.Screen name="FirstScreen" component={FirstScreen} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="CadastroPets" component={CadastroPets} />
+      <Stack.Screen name="CadastroUsers" component={CadastroUsers} />
       <Stack.Screen
         name="CadastroUsuarioLista"
         component={CadastroUsuarioLista}
