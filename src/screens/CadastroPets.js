@@ -1,28 +1,45 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  ImageBackground,
+  View,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  Modal,
+  Animated,
+} from 'react-native';
 import storage from '@react-native-firebase/storage';
 
-export default function CadastroPets() {
-  const [imagemEscolhida, setImagemEscolhida] = useState([]);
+import {colors} from '../commonStyles';
+import TopBarGeral from '../components/TopBarGeral';
+import PetsForm from '../components/PetsForm';
 
-  function openPicker() {
-    ImagePicker.openPicker({
-      width: 350,
-      height: 450,
-      cropping: true,
-    })
-      .then(images => {
-        setImagemEscolhida({
-          uri: images.path,
-          type: images.mime,
-          name: `IMG_${new Date().getTime()}.${images.path.split('/')[1]}`,
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
+import {AuthContext} from '../contexts/auth';
+
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+
+const pickerOptions = {
+  width: 512,
+  height: 512,
+  cropping: true,
+  cropperToolbarTitle: 'Ajustar Imagem',
+  compressImageQuality: 0.8,
+};
+
+export default function CadastroPets({navigation}) {
+  const {opacity} = useContext(AuthContext);
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   async function enviar() {
     const reference = storage().ref(`imagesteste/${imagemEscolhida.name}`);
@@ -32,26 +49,37 @@ export default function CadastroPets() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={openPicker} style={styles.button}>
-        <Text> aaa </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={enviar} style={styles.button}>
-        <Text>enviar</Text>
-      </TouchableOpacity>
+      <ImageBackground
+        source={require('../../assets/images/Segunda_tela_background.png')}
+        style={styles.container_back_img}>
+        <TopBarGeral
+          navigation={navigation}
+          backButton={true}
+          homeButton={true}
+        />
+        <View style={styles.header}>
+          <Text style={styles.header_text}> Cadastro de {'\n'} Pets</Text>
+        </View>
+        <PetsForm />
+      </ImageBackground>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
   },
-
-  button: {
-    borderWidth: 1,
+  container_back_img: {
     width: '100%',
+    flex: 1,
+  },
+  header: {
+    width: '100%',
+    paddingLeft: scale(28),
+  },
+  header_text: {
+    fontSize: moderateScale(32),
+    color: colors.input,
+    fontWeight: 'bold',
   },
 });

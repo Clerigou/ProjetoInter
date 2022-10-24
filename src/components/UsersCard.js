@@ -6,19 +6,19 @@ import {colors} from '../commonStyles';
 export default function UsersCard({user, handleZoomModal}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.textCards}>
+      {/* <Text style={styles.textCards}>
         {user.Nome.length > 12 ? `${user.Nome.slice(0, 12)}...` : user.Nome}
-      </Text>
-      <Text style={styles.textCards}>
+      </Text> */}
+      {/* <Text style={styles.textCards}>
         {user.Rua.length > 12 ? `${user.Rua.slice(0, 12)}...` : user.Rua}
-      </Text>
+      </Text> */}
       <Text style={styles.textCards}>{user.CEP}</Text>
       <Text style={styles.textCards}>{user.Data}</Text>
       <Text style={styles.textCards}>{user.CPF}</Text>
       <Text style={styles.textCards}>{user.Numero}</Text>
-      <Text style={styles.textCards}>
+      {/* <Text style={styles.textCards}>
         {user.Email.length > 12 ? `${user.Email.slice(0, 12)}...` : user.Rua}
-      </Text>
+      </Text> */}
       <TouchableOpacity
         style={styles.zoomButton}
         onPress={() => {
