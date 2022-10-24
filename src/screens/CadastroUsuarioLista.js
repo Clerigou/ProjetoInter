@@ -1,48 +1,102 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   StatusBar,
   ImageBackground,
-  Image,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
+
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
+import UsersCard from '../components/UsersCard';
+import ListEmpty from '../components/ListEmpty';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CadastroUsuarioLista = ({navigation}) => {
+  const [zoomModal, setZoomModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+
+  const handleZoomModal = user => {
+    setZoomModal(!zoomModal);
+    setCurrentUser(user);
+  };
+
+  const Values = [
+    {
+      Nome: 'Gabriel Monteiro',
+      Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
+      CEP: '54100-320',
+      Data: '10/01/2004',
+      CPF: '138.934.255-43',
+      Numero: '(81)98374-3234',
+      Email: 'gabrielm@gmail.com',
+    },
+    {
+      Nome: 'Gabrielx',
+      Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
+      CEP: '54100-320',
+      Data: '10/01/2004',
+      CPF: '138.934.255-43',
+      Numero: '(81)98374-3234',
+      Email: 'gabrielm@gmail.com',
+    },
+  ];
+
   return (
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
-      <StatusBar
-        hidden
-        //         backgroundColor={colors.background_secundary}
-        //         barStyle={'light-content'}
-      />
-      <TopBarGeral buttonRight={'logout'} />
+      <StatusBar hidden />
+      <TopBarGeral buttonRight={true} homeButton />
       <View style={styles.containerTextIntro}>
-        <Text style={styles.textUser}>Oi, Gabriel</Text>
-        <Text style={styles.textIntro}>Selecione uma {'\n'}atividade</Text>
+        <Text style={styles.textIntro}>Cadastro de{'\n'}Usuários</Text>
+        <Text style={styles.textUser}>Usuários</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.botao}>
-          <Text style={styles.botao_text}>Cadastro Pets</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.botao}>
-          <Text style={styles.botao_text}>Cadastros Usuários</Text>
-        </TouchableOpacity>
+      <View style={styles.cardContainer}>
+        <FlatList
+          numColumns={2}
+          data={Values}
+          keyExtractor={item => item}
+          renderItem={({item}) => (
+            <UsersCard
+              key={item}
+              user={item}
+              handleZoomModal={handleZoomModal}
+            />
+          )}
+          ListEmptyComponent={() => (
+            <ListEmpty message={'Não há usuários cadastrados'} />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[
+            {paddingBottom: 100},
+            Values.length === 0 && {flex: 1},
+          ]}
+        />
       </View>
-
-      <Image
-        source={require('../../assets/images/Terceira_tela_IMG.png/')}
-        style={styles.imageDogs}
-      />
-      <Image
-        source={require('../../assets/images/Terceira_tela_Elemento.png/')}
-        style={styles.elementBottomImage}
-      />
+      {zoomModal && (
+        <View style={styles.modalContainer}>
+          <View style={styles.modalZoom}>
+            <TouchableOpacity
+              style={styles.closeIcon}
+              onPress={() => setZoomModal(false)}>
+              <MaterialIcons name="close-circle" size={29} />
+            </TouchableOpacity>
+            <View style={styles.contentValues}>
+              <Text style={styles.modalText}>Nome: {currentUser.Nome}</Text>
+              <Text style={styles.modalText}>Endereço: {currentUser.Rua}</Text>
+              <Text style={styles.modalText}>CEP: {currentUser.CEP}</Text>
+              <Text style={styles.modalText}>Data: {currentUser.Data}</Text>
+              <Text style={styles.modalText}>CPF: {currentUser.CPF}</Text>
+              <Text style={styles.modalText}>Número: {currentUser.Numero}</Text>
+              <Text style={styles.modalText}>E-mail: {currentUser.Email}</Text>
+            </View>
+          </View>
+        </View>
+      )}
     </ImageBackground>
   );
 };
@@ -53,11 +107,11 @@ const styles = StyleSheet.create({
   },
   textUser: {
     color: colors.input,
-    fontSize: 28,
+    fontSize: 26,
   },
   containerTextIntro: {
     paddingLeft: 30,
-    marginBottom: 20,
+    marginTop: 20,
   },
   textIntro: {
     color: colors.background_primary_dark,
@@ -65,35 +119,39 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  buttonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  botao: {
-    width: '70%',
-    height: 70,
-    borderRadius: 23,
-    backgroundColor: colors.input,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  botao_text: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: colors.text,
-  },
-  imageDogs: {
+  cardContainer: {
     width: '100%',
-    height: '20%',
-    position: 'absolute',
-    bottom: 50,
+    height: '70%',
+    padding: 10,
+    alignItems: 'center',
   },
-  elementBottomImage: {
-    width: '120%',
-    height: '20%',
+  modalContainer: {
+    width: '100%',
+    height: '100%',
     position: 'absolute',
-    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalZoom: {
+    width: '90%',
+    height: '60%',
+    backgroundColor: colors.background_secundary,
+    padding: 24,
+    borderRadius: 24,
+  },
+  closeIcon: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  modalText: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: '300',
+  },
+  contentValues: {
+    alignSelf: 'center',
+    marginTop: 20,
   },
 });
 
