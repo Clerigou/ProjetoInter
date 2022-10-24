@@ -63,7 +63,7 @@ const Home = ({navigation}) => {
           navigation.navigate('CadastroUsers');
           break;
         case 3:
-          navigation.navigate('Pets');
+          navigation.navigate('CadastroPetsLista');
           break;
         case 4:
           navigation.navigate('CadastroUsuarioLista');
@@ -100,10 +100,10 @@ const Home = ({navigation}) => {
         useNativeDriver: true,
       }),
     ]).start();
+    auth()
+      .signOut()
+      .then(() => console.log('User signed out!'));
   }
-  auth()
-    .signOut()
-    .then(() => console.log('User signed out!'));
 
   return (
     <ImageBackground
@@ -139,8 +139,8 @@ const Home = ({navigation}) => {
             ]}>
             <TouchableOpacity
               onPress={() => {
-                setSelected(3);
-                handlePress(3);
+                setSelected(2);
+                handlePress(2);
               }}
               style={styles.botao}>
               <Text style={styles.botao_text}>Cadastro Usuários</Text>
@@ -155,8 +155,8 @@ const Home = ({navigation}) => {
             ]}>
             <TouchableOpacity
               onPress={() => {
-                setSelected(2);
-                handlePress(2);
+                setSelected(3);
+                handlePress(3);
               }}
               style={styles.botao}>
               <Text style={styles.botao_text}>Lista de Pets</Text>

@@ -8,6 +8,7 @@ import CadastroPets from '../screens/CadastroPets';
 import CadastroUsers from '../screens/CadastroUsers';
 import FirstScreen from '../screens/FirstScreen';
 import CadastroUsuarioLista from '../screens/CadastroUsuarioLista';
+import CadastroPetsLista from '../screens/CadastroPetsLista';
 
 import AuthProvider from '../contexts/auth';
 
@@ -26,6 +27,7 @@ function StackAppNavigator() {
         name="CadastroUsuarioLista"
         component={CadastroUsuarioLista}
       />
+      <Stack.Screen name="CadastroPetsLista" component={CadastroPetsLista} />
     </Stack.Navigator>
   );
 }
