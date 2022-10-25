@@ -22,14 +22,6 @@ import {AuthContext} from '../contexts/auth';
 
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
-const pickerOptions = {
-  width: 512,
-  height: 512,
-  cropping: true,
-  cropperToolbarTitle: 'Ajustar Imagem',
-  compressImageQuality: 0.8,
-};
-
 export default function CadastroPets({navigation}) {
   const {opacity} = useContext(AuthContext);
 

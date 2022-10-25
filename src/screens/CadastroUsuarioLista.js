@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 
 import {CellPhoneMask, MaskCPF, CEPMask} from '../global/mask';
@@ -17,12 +18,14 @@ import UsersCard from '../components/UsersCard';
 import ListEmpty from '../components/ListEmpty';
 import firestore from '@react-native-firebase/firestore';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {AuthContext} from '../contexts/auth';
 
 const CadastroUsuarioLista = ({navigation}) => {
   const [zoomModal, setZoomModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {opacity} = useContext(AuthContext);
 
   const handleZoomModal = user => {
     setZoomModal(!zoomModal);
@@ -48,6 +51,14 @@ const CadastroUsuarioLista = ({navigation}) => {
 
     // Unsubscribe from events when no longer in use
     return () => subscriber();
+  }, []);
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
   if (loading) {

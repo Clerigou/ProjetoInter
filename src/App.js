@@ -13,10 +13,10 @@ const App = () => {
   }, []);
 
   return (
-    //     <WithSplashScreen isAppReady={isAppReady}>
-    //       <Routes />
-    //     </WithSplashScreen>
-    <CadastroPetsLista />
+    <WithSplashScreen isAppReady={isAppReady}>
+      <Routes />
+    </WithSplashScreen>
+    // <CadastroPetsLista />
   );
 };
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   TextInput,
   KeyboardAvoidingView,
+  Animated,
 } from 'react-native';
 
 import {colors} from '../commonStyles';
@@ -19,6 +20,7 @@ import PetsCard from '../components/PetsCard';
 import ListEmpty from '../components/ListEmpty';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore from '@react-native-firebase/firestore';
+import {AuthContext} from '../contexts/auth';
 
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
@@ -29,6 +31,7 @@ const CadastroPetsLista = ({navigation}) => {
   const [pdfName, setPdfName] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const {opacity} = useContext(AuthContext);
 
   useEffect(() => {
     const subscriber = firestore()
@@ -49,6 +52,14 @@ const CadastroPetsLista = ({navigation}) => {
 
     // Unsubscribe from events when no longer in use
     return () => subscriber();
+  }, []);
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
   const handlePets = pets => {

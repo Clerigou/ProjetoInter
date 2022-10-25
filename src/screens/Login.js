@@ -7,26 +7,28 @@ import {
   TextInput,
   StyleSheet,
   Text,
-  StatusBar,
   Alert,
-  Pressable,
   ImageBackground,
   Image,
   Animated,
   ActivityIndicator,
+  Keyboard,
+  TouchableOpacity,
 } from 'react-native';
 
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
 
 import {AuthContext} from '../contexts/auth';
-import {scale, verticalScale} from 'react-native-size-matters';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
 export default Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const {user, setUser} = useContext(AuthContext);
+
+  const passRef = useRef();
 
   const [inputTop] = useState(new Animated.ValueXY({x: -1000, y: 0}));
   const [inputBottom] = useState(new Animated.ValueXY({x: 1000, y: 0}));
@@ -74,6 +76,7 @@ export default Login = ({navigation}) => {
   }
 
   async function logando() {
+    Keyboard.dismiss();
     if (!email || !password) {
       setLoading(false);
       return Alert.alert('Email ou senha vazio', 'preencha todos os campos!');
@@ -111,6 +114,7 @@ export default Login = ({navigation}) => {
           );
         }
         console.error(error);
+        setLoading(false);
       });
   }
 
@@ -134,8 +138,9 @@ export default Login = ({navigation}) => {
               style={styles.input}
               placeholder="EMAIL"
               placeholderTextColor={colors.text}
-              fontSize={16}
+              fontSize={moderateScale(17)}
               keyboardType="email-address"
+              onSubmitEditing={() => passRef.current.focus()}
               onChangeText={Text => {
                 setEmail(Text);
               }}
@@ -152,24 +157,25 @@ export default Login = ({navigation}) => {
               onChangeText={Text => {
                 setPassword(Text);
               }}
+              ref={passRef}
               placeholderTextColor={colors.text}
-              fontSize={16}
+              fontSize={moderateScale(17)}
               keyboardType="default"
               secureTextEntry={true}
             />
           </Animated.View>
           <Animated.View style={[styles.button_container, {opacity: opacity}]}>
-            <Pressable style={styles.esqueci_senha_button}>
+            <TouchableOpacity style={styles.esqueci_senha_button}>
               <Text style={styles.esqueci_senha_text}>Esqueci minha senha</Text>
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable style={styles.login_button} onPress={logando}>
+            <TouchableOpacity style={styles.login_button} onPress={logando}>
               {loading ? (
                 <ActivityIndicator size={'large'} color={colors.text} />
               ) : (
                 <Text style={styles.login_button_text}> Entrar </Text>
               )}
-            </Pressable>
+            </TouchableOpacity>
           </Animated.View>
         </Animated.View>
         <Animated.View style={[styles.img_container, {opacity: opacity}]}>

@@ -1,5 +1,5 @@
 import {transform} from '@babel/core';
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState, useContext, useRef} from 'react';
 
 import {
   ImageBackground,
@@ -10,11 +10,13 @@ import {
   Text,
   Pressable,
   Animated,
+  TouchableOpacity,
 } from 'react-native';
 
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
 import {AuthContext} from '../contexts/auth';
+import {TextInputMask} from 'react-native-masked-text';
 
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
@@ -25,12 +27,15 @@ export default function CadastroUsers({navigation}) {
   const {opacity} = useContext(AuthContext);
 
   const [nome, setNome] = useState('');
-  const [cep, setCep] = useState();
-  const [cpf, setCpf] = useState();
-  const [nascimento, setNascimento] = useState();
-  const [telefone, setTelefone] = useState();
-  const [email, setEmail] = useState();
-  const [senha, setSenha] = useState();
+  const [cep, setCep] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [nascimento, setNascimento] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const refDate = useRef();
+
   useEffect(() => {
     createSecondaryApp();
     Animated.timing(opacity, {
@@ -42,7 +47,7 @@ export default function CadastroUsers({navigation}) {
 
   async function createSecondaryApp() {
     const apps = firebase.apps;
-    if (apps.length <= 1) {
+    if (apps.length === 1) {
       const credentials = {
         clientId:
           '133998181481-1t2b9uku7vq759skano9o3ieng2l8tq8.apps.googleusercontent.com',
@@ -87,6 +92,72 @@ export default function CadastroUsers({navigation}) {
       });
   }
 
+  function HandleLogin() {
+    const validar = validate();
+    if (validar.status) {
+      console.log(validar.msg);
+    } else {
+      console.log(validar.msg);
+    }
+  }
+
+  function validate() {
+    let msg = 'Sucesso na validação';
+    let status = true;
+    if (!nome || !cep || !cpf || !nascimento || !telefone || !nome || !senha) {
+      status = false;
+      msg = 'Preencha todos os campos';
+    }
+
+    if (!TestaCPF(cpf)) {
+      status = false;
+      msg = 'Cpf inválido';
+    }
+
+    if (!validateEmail(email)) {
+      status = false;
+      msg = 'Email inválido';
+    }
+    return {
+      status: status,
+      msg: msg,
+    };
+  }
+
+  function validateEmail(email) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  }
+
+  function TestaCPF(cpf) {
+    if (!cpf) return false;
+    if (cpf < 14) return false;
+
+    let TesteCpf =
+      cpf.slice(0, 3) + cpf.slice(4, 7) + cpf.slice(8, 11) + cpf.slice(12, 14);
+
+    var Soma;
+    var Resto;
+    Soma = 0;
+    if (TesteCpf == '00000000000') return false;
+
+    for (i = 1; i <= 9; i++)
+      Soma = Soma + parseInt(TesteCpf.substring(i - 1, i)) * (11 - i);
+    Resto = (Soma * 10) % 11;
+
+    if (Resto == 10 || Resto == 11) Resto = 0;
+    if (Resto != parseInt(TesteCpf.substring(9, 10))) return false;
+
+    Soma = 0;
+    for (i = 1; i <= 10; i++)
+      Soma = Soma + parseInt(TesteCpf.substring(i - 1, i)) * (12 - i);
+    Resto = (Soma * 10) % 11;
+
+    if (Resto == 10 || Resto == 11) Resto = 0;
+    if (Resto != parseInt(TesteCpf.substring(10, 11))) return false;
+    return true;
+  }
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -119,31 +190,49 @@ export default function CadastroUsers({navigation}) {
               onChangeText={text => setNome(text)}
             />
             <View style={styles.body_inputs_row}>
-              <TextInput
+              <TextInputMask
                 style={styles.inputs_row}
                 placeholder="CEP"
                 fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCep(text)}
+                type={'custom'}
+                options={{
+                  mask: '99999-999',
+                }}
               />
-              <TextInput
+              <TextInputMask
                 style={styles.inputs_row}
                 placeholder="Data de nasc"
                 fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setNascimento(text)}
+                type={'datetime'}
+                ref={refDate}
+                options={{
+                  format: 'DD/MM/YYYY',
+                }}
               />
             </View>
             <View style={styles.body_inputs_row}>
-              <TextInput
+              <TextInputMask
                 style={styles.inputs_row}
                 placeholder="CPF"
+                type={'cpf'}
+                value={cpf}
                 fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCpf(text)}
               />
-              <TextInput
+              <TextInputMask
+                type={'cel-phone'}
+                options={{
+                  maskType: 'BRL',
+                  withDDD: true,
+                  dddMask: '(99) ',
+                }}
                 style={styles.inputs_row}
+                value={telefone}
                 placeholder="Telefone"
                 fontSize={18}
                 placeholderTextColor={colors.text}
@@ -171,9 +260,9 @@ export default function CadastroUsers({navigation}) {
               onChangeText={text => setSenha(text)}
             />
 
-            <Pressable onPress={createUser} style={styles.button}>
+            <TouchableOpacity onPress={HandleLogin} style={styles.button}>
               <Text style={styles.button_text}>Enviar</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </ScrollView>
         <View style={styles.footer}>
