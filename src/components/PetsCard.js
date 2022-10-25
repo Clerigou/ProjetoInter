@@ -6,20 +6,20 @@ import {colors} from '../commonStyles';
 export default function PetsCard({pets, handleZoomModal}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.textCards}>Nome: {pets.nome}</Text>
+      <Text style={styles.textCards}>Nome: {pets.name}</Text>
       <Text style={styles.textCards}>Raça: {pets.raca}</Text>
       <Text style={styles.textCards}>Pelagem: {pets.pelagem}</Text>
-      <Text style={styles.textCards}>Porte Fisico: {pets.porteFisico}</Text>
-      <Text style={styles.textCards}>Data: {pets.data}</Text>
+      <Text style={styles.textCards}>Porte Fisico: {pets.porte}</Text>
+      <Text style={styles.textCards}>Tipo: {pets.tipo}</Text>
       <Text style={styles.textCards}>Sexo: {pets.sexo}</Text>
       <Text style={styles.textCards}>Idade: {pets.idade}</Text>
       <Text style={styles.textCards}>Doenças: {pets.doencas}</Text>
       <Text style={styles.textCards}>Vacinas: {pets.vacinas}</Text>
       <Text style={styles.textCards}>
         Observações:{' '}
-        {pets.observacoes.length > 12
+        {pets.obs.length > 12
           ? `${pets.observacoes.slice(0, 12)}...`
-          : pets.observacoes}
+          : pets.obs}
       </Text>
       <TouchableOpacity
         style={styles.zoomButton}

@@ -2,6 +2,9 @@ import React, {useState, useEffect} from 'react';
 
 import Routes from './routes/Routes';
 import {WithSplashScreen} from './SplachScreen';
+
+import CadastroPetsLista from './screens/CadastroPetsLista';
+
 const App = () => {
   const [isAppReady, setIsAppReady] = useState(false);
 
@@ -10,9 +13,10 @@ const App = () => {
   }, []);
 
   return (
-    <WithSplashScreen isAppReady={isAppReady}>
-      <Routes />
-    </WithSplashScreen>
+    //     <WithSplashScreen isAppReady={isAppReady}>
+    //       <Routes />
+    //     </WithSplashScreen>
+    <CadastroPetsLista />
   );
 };
 

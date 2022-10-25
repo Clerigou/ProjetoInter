@@ -10,12 +10,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
+import {CellPhoneMask, MaskCPF, CEPMask} from '../global/mask';
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
 import UsersCard from '../components/UsersCard';
 import ListEmpty from '../components/ListEmpty';
 import firestore from '@react-native-firebase/firestore';
-
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CadastroUsuarioLista = ({navigation}) => {
@@ -29,26 +29,6 @@ const CadastroUsuarioLista = ({navigation}) => {
     setCurrentUser(user);
   };
 
-  // const Values = [
-  //   {
-  //     Nome: 'Gabriel Monteiro',
-  //     Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
-  //     CEP: '54100-320',
-  //     Data: '10/01/2004',
-  //     CPF: '138.934.255-43',
-  //     Numero: '(81)98374-3234',
-  //     Email: 'gabrielm@gmail.com',
-  //   },
-  //   {
-  //     Nome: 'Gabrielx',
-  //     Rua: 'R.Jorge Aragão, Nº10, Centro, Moreno- PE',
-  //     CEP: '54100-320',
-  //     Data: '10/01/2004',
-  //     CPF: '138.934.255-43',
-  //     Numero: '(81)98374-3234',
-  //     Email: 'gabrielm@gmail.com',
-  //   },
-  // ];
   useEffect(() => {
     const subscriber = firestore()
       .collection('Users')
@@ -70,8 +50,6 @@ const CadastroUsuarioLista = ({navigation}) => {
     return () => subscriber();
   }, []);
 
-  console.log(data);
-
   if (loading) {
     return <ActivityIndicator />;
   }
@@ -81,7 +59,7 @@ const CadastroUsuarioLista = ({navigation}) => {
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
       <StatusBar hidden />
-      <TopBarGeral buttonRight={true} homeButton />
+      <TopBarGeral backButton />
       <View style={styles.containerTextIntro}>
         <Text style={styles.textIntro}>Cadastro de{'\n'}Usuários</Text>
         <Text style={styles.textUser}>Usuários</Text>
@@ -104,7 +82,9 @@ const CadastroUsuarioLista = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
             {paddingBottom: 100},
-            data.length === 0 && {flex: 1},
+            data.length === 0 && {
+              flex: 1,
+            },
           ]}
         />
       </View>
@@ -117,13 +97,20 @@ const CadastroUsuarioLista = ({navigation}) => {
               <MaterialIcons name="close-circle" size={29} />
             </TouchableOpacity>
             <View style={styles.contentValues}>
-              <Text style={styles.modalText}>Nome: {currentUser.Nome}</Text>
-              <Text style={styles.modalText}>Endereço: {currentUser.Rua}</Text>
-              <Text style={styles.modalText}>CEP: {currentUser.CEP}</Text>
-              <Text style={styles.modalText}>Data: {currentUser.Data}</Text>
-              <Text style={styles.modalText}>CPF: {currentUser.CPF}</Text>
-              <Text style={styles.modalText}>Número: {currentUser.Numero}</Text>
-              <Text style={styles.modalText}>E-mail: {currentUser.Email}</Text>
+              <Text style={styles.modalText}>Nome: {currentUser.name}</Text>
+              <Text style={styles.modalText}>
+                CEP: {CEPMask(currentUser.cep.toString())}
+              </Text>
+              <Text style={styles.modalText}>
+                Data: {currentUser.nascimento}
+              </Text>
+              <Text style={styles.modalText}>
+                CPF: {MaskCPF(currentUser.cpf.toString())}
+              </Text>
+              <Text style={styles.modalText}>
+                Número: {CellPhoneMask(currentUser.telefone)}
+              </Text>
+              <Text style={styles.modalText}>E-mail: {currentUser.email}</Text>
             </View>
           </View>
         </View>

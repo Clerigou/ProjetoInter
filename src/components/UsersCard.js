@@ -1,24 +1,24 @@
 import React from 'react';
 
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {CellPhoneMask, MaskCPF} from '../global/mask';
 import {colors} from '../commonStyles';
 
 export default function UsersCard({user, handleZoomModal}) {
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.textCards}>
-        {user.Nome.length > 12 ? `${user.Nome.slice(0, 12)}...` : user.Nome}
-      </Text> */}
-      {/* <Text style={styles.textCards}>
-        {user.Rua.length > 12 ? `${user.Rua.slice(0, 12)}...` : user.Rua}
-      </Text> */}
-      <Text style={styles.textCards}>{user.CEP}</Text>
-      <Text style={styles.textCards}>{user.Data}</Text>
-      <Text style={styles.textCards}>{user.CPF}</Text>
-      <Text style={styles.textCards}>{user.Numero}</Text>
-      {/* <Text style={styles.textCards}>
-        {user.Email.length > 12 ? `${user.Email.slice(0, 12)}...` : user.Rua}
-      </Text> */}
+      <Text style={styles.textCards}>
+        Nome:{' '}
+        {user.name.length > 12 ? `${user.name.slice(0, 12)}...` : user.name}
+      </Text>
+      <Text style={styles.textCards}>CEP: {user.cep}</Text>
+      <Text style={styles.textCards}>Ano: {user.nascimento}</Text>
+      <Text style={styles.textCards}>CPF: {MaskCPF(user.cpf.toString())}</Text>
+      <Text style={styles.textCards}>Tel: {CellPhoneMask(user.telefone)}</Text>
+      <Text style={styles.textCards}>
+        Email:{' '}
+        {user.email.length > 12 ? `${user.email.slice(0, 12)}...` : user.email}
+      </Text>
       <TouchableOpacity
         style={styles.zoomButton}
         onPress={() => {
