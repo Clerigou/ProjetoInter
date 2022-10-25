@@ -86,19 +86,38 @@ const CadastroPetsLista = ({navigation}) => {
           <body>
             <header>
               <h1>Pets Lar</h1>
-              <address>
-                <p>Nome: ${currentpets.name}</p>
-                <p>Raça: ${currentpets.raca}</p>
-                <p>Pelagem: ${currentpets.pelagem}</p>
-                <p>Porte Físico: ${currentpets.porte}</p>
-                <p>Tipo: ${currentpets.tipo}</p>
-                <p>Sexo: ${currentpets.sexo}</p>
-                <p>Idade: ${currentpets.idade}</p>
-                <p>Vacinas: ${currentpets.vacinas}</p>
-                <p>Observações: ${currentpets.obs}</p>
-              </address>
             </header>
-           
+              <h1>Registro de Pets</h1>
+            <table width="650">
+            <tr bgcolor="grey">
+                <th width="100">Nome</th>
+                <th width="100">Raça</th>
+                <th width="100">Pelagem</th>
+                <th width="100">Porte Físico</th>
+                <th width="100">Tipo</th>
+                <th width="100">Sexo</th>
+            </tr>
+            <tr bgcolor="lightgrey" align="center">
+            <td>${currentpets.name}</td>
+            <td>${currentpets.raca}</td>
+            <td>${currentpets.pelagem}</td>
+            <td>${currentpets.porte}</td>
+            <td>${currentpets.tipo}</td>
+            <td>${currentpets.sexo}</td>
+            </tr>
+            </table>
+            <table width="650">
+            <tr bgcolor="grey">
+            <th width="100">Idade</th>
+            <th width="200">Vacinas</th>
+            <th width="320">Observações</th>
+            </tr>
+            <tr bgcolor="lightgrey" align="center">
+            <td>${currentpets.idade}</td>
+            <td>${currentpets.vacinas}</td>
+            <td>${currentpets.obs}</td>
+            </tr>
+            </table>
           </body>
         </html>
       `;
