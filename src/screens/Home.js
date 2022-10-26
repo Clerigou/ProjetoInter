@@ -120,6 +120,11 @@ const Home = ({navigation}) => {
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
+      <StatusBar
+        backgroundColor={colors.background_primary_dark}
+        barStyle={'light-content'}
+        hidden={true}
+      />
       <TopBarGeral buttonRight={'logout'} logOut={logOut} />
       <View style={styles.containerTextIntro}>
         <Text style={styles.textUser}>Oi, {user.name}</Text>

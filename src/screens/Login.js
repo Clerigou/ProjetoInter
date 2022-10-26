@@ -7,13 +7,13 @@ import {
   TextInput,
   StyleSheet,
   Text,
-  Alert,
   ImageBackground,
   Image,
   Animated,
   ActivityIndicator,
   Keyboard,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 
 import {CommonActions} from '@react-navigation/native';
@@ -145,6 +145,11 @@ export default Login = ({navigation}) => {
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}
         resizeMode={'stretch'}>
+        <StatusBar
+          backgroundColor={colors.background_primary_dark}
+          barStyle={'light-content'}
+          hidden={true}
+        />
         <CommonModal />
         <TopBarGeral backButton={true} navigation={navigation} />
         <Animated.View style={styles.body}>
