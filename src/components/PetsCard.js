@@ -2,6 +2,7 @@ import React from 'react';
 
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../commonStyles';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
 export default function PetsCard({pets, handleZoomModal}) {
   return (
@@ -34,24 +35,24 @@ export default function PetsCard({pets, handleZoomModal}) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 170,
-    height: 250,
+    width: scale(160),
+    height: verticalScale(230),
     backgroundColor: colors.background_primary_dark,
     borderRadius: 15,
-    margin: 12,
-    padding: 12,
+    margin: moderateScale(12),
+    padding: moderateScale(12),
   },
   textCards: {
-    fontSize: 12,
+    fontSize: scale(11),
   },
   zoomButton: {
     width: '80%',
-    height: 30,
+    height: verticalScale(30),
     backgroundColor: colors.background_primary,
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: 10,
+    marginTop: moderateScale(12),
   },
 });
