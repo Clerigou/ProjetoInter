@@ -16,6 +16,8 @@ import TopBarGeral from '../components/TopBarGeral';
 import auth from '@react-native-firebase/auth';
 import {AuthContext} from '../contexts/auth';
 
+import {CommonActions} from '@react-navigation/native';
+
 const Home = ({navigation}) => {
   const {user, opacity} = useContext(AuthContext);
   const [selected, setSelected] = useState(0);
@@ -104,7 +106,12 @@ const Home = ({navigation}) => {
         .signOut()
         .then(() => {
           console.log('User signed out!');
-          navigation.navigate('Login');
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Login'}],
+            }),
+          );
         });
     });
   };

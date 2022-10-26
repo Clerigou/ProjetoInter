@@ -140,7 +140,7 @@ export default function PetsForm() {
         <TouchableOpacity
           onPress={() => setVisible(true)}
           style={styles.image_container}>
-          <Icon name="camera" size={moderateScale(35)} color={colors.text} />
+          <Icon name="camera" size={moderateScale(32)} color={colors.text} />
         </TouchableOpacity>
       </View>
       <Modal
@@ -284,12 +284,16 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    paddingLeft: scale(28),
+    paddingHorizontal: scale(26),
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: verticalScale(10),
   },
   header_text: {
     fontSize: moderateScale(32),
     color: colors.input,
     fontWeight: 'bold',
+    marginRight: scale(20),
   },
   body: {
     width: '100%',
@@ -298,9 +302,9 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   image_container: {
-    width: '30%',
-    height: verticalScale(50),
-    borderRadius: 20,
+    width: moderateScale(60),
+    height: moderateScale(60),
+    borderRadius: 70 / 2,
     marginBottom: verticalScale(8),
     alignItems: 'center',
     justifyContent: 'center',

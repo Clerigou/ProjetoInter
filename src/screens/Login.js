@@ -16,8 +16,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import {CommonActions} from '@react-navigation/native';
+
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
+import ErrorModal from '../components/ErrorModal';
 
 import {AuthContext} from '../contexts/auth';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
@@ -26,6 +29,8 @@ export default Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [index, setIndex] = useState(null);
   const {user, setUser} = useContext(AuthContext);
 
   const passRef = useRef();
@@ -72,14 +77,28 @@ export default Login = ({navigation}) => {
         duration: 1000,
         useNativeDriver: true,
       }),
-    ]).start(() => navigation.navigate('Home'));
+    ]).start(() => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Home'}],
+        }),
+      );
+    });
+  }
+
+  function showModal(index) {
+    setIndex(index);
+    setErrorModal(true);
   }
 
   async function logando() {
     Keyboard.dismiss();
     if (!email || !password) {
       setLoading(false);
-      return Alert.alert('Email ou senha vazio', 'preencha todos os campos!');
+      return showModal(0);
+
+      Alert.alert('Email ou senha vazio', 'preencha todos os campos!');
     }
     setLoading(true);
 
@@ -124,6 +143,11 @@ export default Login = ({navigation}) => {
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}
         resizeMode={'stretch'}>
+        <ErrorModal
+          errorModal={errorModal}
+          setErrorModal={setErrorModal}
+          index={index}
+        />
         <TopBarGeral backButton={true} navigation={navigation} />
         <Animated.View style={styles.body}>
           <Animated.View style={[styles.titulo_container, {opacity: opacity}]}>
