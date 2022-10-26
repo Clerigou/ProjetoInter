@@ -8,6 +8,7 @@ import {
   View,
   Platform,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import {colors} from '../commonStyles';
 
@@ -29,30 +30,32 @@ export default function TopBarGeral({
     <SafeAreaView style={styles.container}>
       <View style={styles.left}>
         {backButton ? (
-          <Pressable onPress={() => navigation.goBack()} style={styles.round}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.round}>
             <FoundationIcons
               name="arrow-left"
               size={26}
               color={colors.background_secundary}
             />
-          </Pressable>
+          </TouchableOpacity>
         ) : null}
       </View>
       <View style={styles.right}>
         {buttonRight ? (
           <>
             {buttonRight === 'logout' ? (
-              <Pressable onPress={logOut} style={styles.logout}>
+              <TouchableOpacity onPress={logOut} style={styles.logout}>
                 <MCicons
                   name="logout"
                   size={40}
                   color={colors.background_primary_dark}
                 />
-              </Pressable>
+              </TouchableOpacity>
             ) : buttonRight === 'search' ? (
-              <Pressable style={styles.roundRight}>
+              <TouchableOpacity style={styles.roundRight}>
                 <EvilIcons name="search" size={35} color={colors.text} />
-              </Pressable>
+              </TouchableOpacity>
             ) : null}
           </>
         ) : null}

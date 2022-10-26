@@ -21,6 +21,7 @@ import ListEmpty from '../components/ListEmpty';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore from '@react-native-firebase/firestore';
 import {AuthContext} from '../contexts/auth';
+import storage from '@react-native-firebase/storage';
 
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
@@ -30,10 +31,31 @@ const CadastroPetsLista = ({navigation}) => {
   const [savePDF, setSavePDF] = useState(true);
   const [pdfName, setPdfName] = useState('');
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const {opacity} = useContext(AuthContext);
+  const [zoomLoading, setZoomLoading] = useState(true);
+  const [url, setUrl] = useState();
+
+  async function getUrl() {
+    const url = await storage()
+      .ref(`Pets/${currentpets.name}`)
+      .getDownloadURL()
+
+      .then(res => {
+        console.log(res);
+
+        setUrl(res);
+        setZoomLoading(false);
+      });
+  }
 
   useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
+
     const subscriber = firestore()
       .collection('Pets')
       .onSnapshot(querySnapshot => {
@@ -55,12 +77,10 @@ const CadastroPetsLista = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+    if (currentpets.name) {
+      getUrl();
+    }
+  }, [currentpets]);
 
   const handlePets = pets => {
     setZoomModal(!zoomModal);
@@ -137,109 +157,108 @@ const CadastroPetsLista = ({navigation}) => {
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
-      {!loading ? (
-        <>
-          <StatusBar hidden />
-          <TopBarGeral backButton />
-          <View style={styles.containerTextIntro}>
-            <Text style={styles.textIntro}>
-              Lista de{'\n'}Animais Resgatados
-            </Text>
-            <Text style={styles.textUser}>Pets</Text>
-          </View>
-          <View style={styles.cardContainer}>
-            <FlatList
-              numColumns={2}
-              data={data}
-              keyExtractor={item => item}
-              renderItem={({item}) => (
-                <PetsCard key={item} pets={item} handleZoomModal={handlePets} />
-              )}
-              ListEmptyComponent={() => (
-                <ListEmpty message={'Não há usuários cadastrados'} />
-              )}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={[
-                {paddingBottom: 100},
-                data.length === 0 && {flex: 1},
-              ]}
+      <StatusBar hidden />
+      <TopBarGeral backButton navigation={navigation} />
+      <View style={styles.containerTextIntro}>
+        <Text style={styles.textIntro}>Lista de{'\n'}Animais Resgatados</Text>
+        <Text style={styles.textUser}>Pets</Text>
+      </View>
+      <View style={styles.cardContainer}>
+        <FlatList
+          numColumns={2}
+          data={data}
+          keyExtractor={item => item}
+          renderItem={({item}) => (
+            <PetsCard
+              key={item}
+              pets={item}
+              handleZoomModal={handlePets}
+              zoomSelected
             />
-          </View>
-          {zoomModal && (
-            <View style={styles.modalContainer}>
-              <View style={styles.modalZoom}>
-                <TouchableOpacity
-                  style={styles.closeIcon}
-                  onPress={() => setZoomModal(false)}>
-                  <MaterialIcons name="close-circle" size={29} />
-                </TouchableOpacity>
-                <View style={styles.contentValues}>
-                  <View style={styles.pictureContent}>
-                    <Image
-                      style={styles.picture}
-                      source={require('../../assets/images/poodle.jpg')}
-                    />
-                  </View>
-                  <Text style={styles.modalText}>Nome: {currentpets.name}</Text>
-                  <Text style={styles.modalText}>Raca: {currentpets.raca}</Text>
-                  <Text style={styles.modalText}>
-                    Pelagem: {currentpets.pelagem}
-                  </Text>
-                  <Text style={styles.modalText}>
-                    Porte Fisico: {currentpets.porte}
-                  </Text>
-                  <Text style={styles.modalText}>Tipo: {currentpets.tipo}</Text>
-                  <Text style={styles.modalText}>Sexo: {currentpets.sexo}</Text>
-                  <Text style={styles.modalText}>
-                    Idade: {currentpets.idade}
-                  </Text>
-                  <Text style={styles.modalText}>
-                    Vacinas: {currentpets.vacinas}
-                  </Text>
-                  <Text style={styles.modalText}>
-                    Observações:{' '}
-                    {currentpets.obs.length > 12
-                      ? `${currentpets.obs.slice(0, 25)}...`
-                      : currentpets.obs}
-                  </Text>
+          )}
+          ListEmptyComponent={() => (
+            <ListEmpty message={'Não há usuários cadastrados'} />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[
+            {paddingBottom: 100},
+            data.length === 0 && {flex: 1},
+          ]}
+        />
+      </View>
+      {zoomModal && (
+        <View style={styles.modalContainer}>
+          {!zoomLoading ? (
+            <View style={styles.modalZoom}>
+              <TouchableOpacity
+                style={styles.closeIcon}
+                onPress={() => {
+                  setZoomModal(false);
+                  setZoomLoading(true);
+                }}>
+                <MaterialIcons name="close-circle" size={29} />
+              </TouchableOpacity>
+              <View style={styles.contentValues}>
+                <View style={styles.pictureContent}>
+                  <Image style={styles.picture} source={{uri: url}} />
                 </View>
-                {savePDF && (
-                  <TouchableOpacity
-                    style={styles.savePDF}
-                    onPress={() => {
-                      setSavePDF(false);
-                    }}>
-                    <Text>Salve em PDF</Text>
-                  </TouchableOpacity>
-                )}
-                {!savePDF && (
-                  <KeyboardAvoidingView behavior="padding">
-                    <View style={styles.savePDF}>
-                      <TextInput
-                        style={{marginLeft: 5}}
-                        placeholder="Digite o nome do PDF"
-                        onChangeText={text => setPdfName(text)}
-                      />
-                      <TouchableOpacity>
-                        <MaterialIcons
-                          name="check"
-                          size={24}
-                          color={'#6ffc03'}
-                          onPress={() => {
-                            onSetPDFName();
-                          }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </KeyboardAvoidingView>
-                )}
+                <Text style={styles.modalText}>Nome: {currentpets.name}</Text>
+                <Text style={styles.modalText}>Raca: {currentpets.raca}</Text>
+                <Text style={styles.modalText}>
+                  Pelagem: {currentpets.pelagem}
+                </Text>
+                <Text style={styles.modalText}>
+                  Porte Fisico: {currentpets.porte}
+                </Text>
+                <Text style={styles.modalText}>Tipo: {currentpets.tipo}</Text>
+                <Text style={styles.modalText}>Sexo: {currentpets.sexo}</Text>
+                <Text style={styles.modalText}>Idade: {currentpets.idade}</Text>
+                <Text style={styles.modalText}>
+                  Vacinas: {currentpets.vacinas}
+                </Text>
+                <Text style={styles.modalText}>
+                  Observações:{' '}
+                  {currentpets.obs.length > 12
+                    ? `${currentpets.obs.slice(0, 25)}...`
+                    : currentpets.obs}
+                </Text>
               </View>
+              {savePDF && (
+                <TouchableOpacity
+                  style={styles.savePDF}
+                  onPress={() => {
+                    setSavePDF(false);
+                  }}>
+                  <Text>Salve em PDF</Text>
+                </TouchableOpacity>
+              )}
+              {!savePDF && (
+                <KeyboardAvoidingView behavior="padding">
+                  <View style={styles.savePDF}>
+                    <TextInput
+                      style={{marginLeft: 5}}
+                      placeholder="Digite o nome do PDF"
+                      onChangeText={text => setPdfName(text)}
+                    />
+                    <TouchableOpacity>
+                      <MaterialIcons
+                        name="check"
+                        size={24}
+                        color={'#6ffc03'}
+                        onPress={() => {
+                          onSetPDFName();
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </KeyboardAvoidingView>
+              )}
+            </View>
+          ) : (
+            <View style={styles.modalZoom}>
+              <ActivityIndicator />
             </View>
           )}
-        </>
-      ) : (
-        <View>
-          <ActivityIndicator />
         </View>
       )}
     </ImageBackground>

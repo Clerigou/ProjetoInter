@@ -18,8 +18,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import InputSelect from './InputSelect';
 
+import {TextInputMask} from 'react-native-masked-text';
 import firestore from '@react-native-firebase/firestore';
-import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+import {
+  moderateScale,
+  ms,
+  scale,
+  verticalScale,
+} from 'react-native-size-matters';
 
 const pickerOptions = {
   width: 512,
@@ -38,29 +44,19 @@ const dataSexo = [
   },
 ];
 
-const dataTipo = [
-  {
-    item: 'Gato',
-  },
-  {
-    item: 'Cachorro',
-  },
-];
-
 export default function PetsForm() {
   const [imagemEscolhida, setImagemEscolhida] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [nome, setNome] = useState('');
-  const [raca, setRaca] = useState('');
-  const [tipo, setTipo] = useState(null);
-  const [pelagem, setPelagem] = useState('');
-  const [porte, setPorte] = useState('');
-  const [sexo, setSexo] = useState(null);
-  const [idade, setIdade] = useState('');
-  const [doencas, setDoencas] = useState('');
-  const [vacinas, setVacinas] = useState('');
-  const [observacoes, setObservacoes] = useState('');
-  const date = new Date();
+  const [nome, setNome] = useState();
+  const [raca, setRaca] = useState('Não especificada');
+  const [pelagem, setPelagem] = useState('Não especificada');
+  const [porte, setPorte] = useState('Não especificado');
+  const [sexo, setSexo] = useState();
+  const [idade, setIdade] = useState('Não especificada');
+  const [doencas, setDoencas] = useState();
+  const [vacinas, setVacinas] = useState();
+  const [data, setData] = useState();
+  const [observacoes, setObservacoes] = useState('Sem observações');
 
   function openGaleria() {
     ImagePicker.openPicker(pickerOptions)
@@ -96,9 +92,8 @@ export default function PetsForm() {
         pelagem: pelagem,
         porte: porte,
         sexo: sexo,
-        tipo: tipo,
         idade: idade,
-        data: date,
+        data: data,
         doencas: doencas,
         vacinas: vacinas,
         obs: observacoes,
@@ -115,8 +110,39 @@ export default function PetsForm() {
     await reference.putFile(pathToFile);
   }
 
+  function HandleRegister() {
+    const validar = validate();
+    if (validar.status) {
+      registerPet();
+    } else {
+      console.log(validar.msg);
+    }
+  }
+
+  function validate() {
+    let msg = 'Sucesso na validação';
+    let status = true;
+    if (!nome || !doencas || !vacinas || !data || !sexo) {
+      status = false;
+      msg =
+        'Preencha todos os campos: Nome, doenças, vacinas, data e sexo não podem estar vazios!';
+    }
+    return {
+      msg: msg,
+      status: status,
+    };
+  }
+
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.header_text}> Cadastro de {'\n'} Pets</Text>
+        <TouchableOpacity
+          onPress={() => setVisible(true)}
+          style={styles.image_container}>
+          <Icon name="camera" size={moderateScale(35)} color={colors.text} />
+        </TouchableOpacity>
+      </View>
       <Modal
         onRequestClose={() => {
           setVisible(false);
@@ -161,11 +187,6 @@ export default function PetsForm() {
       </Modal>
 
       <View style={styles.body}>
-        <TouchableOpacity
-          onPress={() => setVisible(true)}
-          style={styles.image_container}>
-          <Icon name="camera" size={moderateScale(35)} color={colors.text} />
-        </TouchableOpacity>
         <TextInput
           placeholder="Nome"
           placeholderTextColor={colors.text}
@@ -213,11 +234,15 @@ export default function PetsForm() {
             setValue={setSexo}
             data={dataSexo}
           />
-          <InputSelect
-            Label={'Tipo'}
-            value={tipo}
-            setValue={setTipo}
-            data={dataTipo}
+          <TextInputMask
+            style={styles.inputs_row}
+            placeholder="Data"
+            placeholderTextColor={colors.text}
+            onChangeText={text => setNascimento(text)}
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY',
+            }}
           />
         </View>
 
@@ -242,6 +267,7 @@ export default function PetsForm() {
           placeholder="Observaçoes"
           placeholderTextColor={colors.text}
           style={styles.input_big}
+          multiline={true}
           onChangeText={text => setObservacoes(text)}
         />
 
@@ -255,6 +281,15 @@ export default function PetsForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    width: '100%',
+    paddingLeft: scale(28),
+  },
+  header_text: {
+    fontSize: moderateScale(32),
+    color: colors.input,
+    fontWeight: 'bold',
   },
   body: {
     width: '100%',
@@ -299,13 +334,15 @@ const styles = StyleSheet.create({
   },
   input_big: {
     width: '80%',
-    height: verticalScale(90),
+    height: verticalScale(80),
     borderRadius: 20,
     paddingHorizontal: 10,
     marginBottom: verticalScale(15),
     backgroundColor: colors.input,
     fontSize: 16,
     color: colors.text,
+    textAlign: 'left',
+    textAlignVertical: 'top',
   },
   button: {
     width: '30%',

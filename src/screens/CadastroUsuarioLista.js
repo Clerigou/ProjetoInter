@@ -33,6 +33,12 @@ const CadastroUsuarioLista = ({navigation}) => {
   };
 
   useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
+
     const subscriber = firestore()
       .collection('Users')
       .onSnapshot(querySnapshot => {
@@ -53,14 +59,6 @@ const CadastroUsuarioLista = ({navigation}) => {
     return () => subscriber();
   }, []);
 
-  useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
   if (loading) {
     return <ActivityIndicator />;
   }
@@ -70,7 +68,7 @@ const CadastroUsuarioLista = ({navigation}) => {
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
       <StatusBar hidden />
-      <TopBarGeral backButton />
+      <TopBarGeral backButton navigation={navigation} />
       <View style={styles.containerTextIntro}>
         <Text style={styles.textIntro}>Cadastro de{'\n'}Usuários</Text>
         <Text style={styles.textUser}>Usuários</Text>

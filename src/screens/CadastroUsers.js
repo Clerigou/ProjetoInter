@@ -27,14 +27,37 @@ export default function CadastroUsers({navigation}) {
   const {opacity} = useContext(AuthContext);
 
   const [nome, setNome] = useState('');
-  const [cep, setCep] = useState('');
+  const [cep, setCep] = useState('cep');
   const [cpf, setCpf] = useState('');
   const [nascimento, setNascimento] = useState('');
   const [telefone, setTelefone] = useState('');
+  const [endereco, setEndereco] = useState('Endereço');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  const [cepValid, setCepValid] = useState(false);
+  const [editable, setEditable] = useState(true);
   const refDate = useRef();
+
+  useEffect(() => {
+    const getEndereco = () => {
+      fetch(`https://viacep.com.br/ws/${cep}/json`)
+        .then(response => response.json())
+        .then(json => {
+          if (json.erro != true) {
+            console.log(json.erro);
+            setCepValid(true);
+            setEndereco(
+              `${json.logradouro}, ${json.bairro}, ${json.localidade}-${json.uf}`,
+            );
+            setEditable(false);
+          }
+        });
+    };
+    if (cep.length > 7) {
+      getEndereco();
+    }
+  }, [cep]);
 
   useEffect(() => {
     createSecondaryApp();
@@ -88,14 +111,17 @@ export default function CadastroUsers({navigation}) {
           })
           .then(() => {
             console.log('User criado com sucesso!');
+          })
+          .catch(error => {
+            console.log(error);
           });
       });
   }
 
-  function HandleLogin() {
+  function HandleRegister() {
     const validar = validate();
     if (validar.status) {
-      console.log(validar.msg);
+      createUser();
     } else {
       console.log(validar.msg);
     }
@@ -104,11 +130,15 @@ export default function CadastroUsers({navigation}) {
   function validate() {
     let msg = 'Sucesso na validação';
     let status = true;
-    if (!nome || !cep || !cpf || !nascimento || !telefone || !nome || !senha) {
+    if (!nome || !nascimento || !senha) {
       status = false;
       msg = 'Preencha todos os campos';
     }
 
+    if (!validateTel(telefone)) {
+      status = false;
+      msg = 'Telefone inválido';
+    }
     if (!TestaCPF(cpf)) {
       status = false;
       msg = 'Cpf inválido';
@@ -118,10 +148,26 @@ export default function CadastroUsers({navigation}) {
       status = false;
       msg = 'Email inválido';
     }
+
+    if (!validateData(nascimento)) {
+      status = false;
+      msg = 'Data inválida';
+    }
+
+    if (!cepValid) {
+      status = false;
+      msg = 'Cep inválido';
+    }
+
     return {
       status: status,
       msg: msg,
     };
+  }
+
+  function validateTel(tel) {
+    var reg = new RegExp('^\\([0-9]{2}\\)(9-[0-9]{4}-[0-9]{4})$');
+    reg.test(tel);
   }
 
   function validateEmail(email) {
@@ -129,9 +175,46 @@ export default function CadastroUsers({navigation}) {
     return re.test(email);
   }
 
+  function validateData(s) {
+    var l = s.length;
+    var j = 0;
+    var dt = {0: '', 1: '', 2: ''};
+
+    // dias de cada mês
+    var n = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // divide a data para o objeto "dt"
+    for (var i = 0; i < l; i++) {
+      var c = s[i];
+      if (c !== '/') dt[j] += c;
+      else j++;
+    }
+
+    // converte strings em número
+    var d = +dt[0];
+    var m = +dt[1];
+    var y = +dt[2];
+
+    // atualiza dias do ano bisexto
+    n[2] += +(y % 400 === 0 || (y % 4 === 0 && y % 100 !== 0));
+
+    // regras de validação
+    // mês deve ser entre 1-12 e dia deve ser maior que zero
+    if (m < 1 || m > 12 || d < 1) {
+      return false;
+    }
+    // valida número de dias do mês
+    else if (d > n[m]) {
+      return false;
+    }
+
+    // passou nas validações
+    return true;
+  }
+
   function TestaCPF(cpf) {
     if (!cpf) return false;
-    if (cpf < 14) return false;
+    if (cpf.length < 14) return false;
 
     let TesteCpf =
       cpf.slice(0, 3) + cpf.slice(4, 7) + cpf.slice(8, 11) + cpf.slice(12, 14);
@@ -186,25 +269,22 @@ export default function CadastroUsers({navigation}) {
               placeholder="Nome"
               placeholderTextColor={colors.text}
               style={styles.inputs}
-              fontSize={18}
               onChangeText={text => setNome(text)}
             />
             <View style={styles.body_inputs_row}>
               <TextInputMask
                 style={styles.inputs_row}
                 placeholder="CEP"
-                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCep(text)}
                 type={'custom'}
                 options={{
-                  mask: '99999-999',
+                  mask: '99999999',
                 }}
               />
               <TextInputMask
                 style={styles.inputs_row}
                 placeholder="Data de nasc"
-                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setNascimento(text)}
                 type={'datetime'}
@@ -220,55 +300,48 @@ export default function CadastroUsers({navigation}) {
                 placeholder="CPF"
                 type={'cpf'}
                 value={cpf}
-                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCpf(text)}
               />
               <TextInputMask
-                type={'cel-phone'}
+                type={'custom'}
                 options={{
-                  maskType: 'BRL',
-                  withDDD: true,
-                  dddMask: '(99) ',
+                  mask: '(99)9-9999-9999',
                 }}
+                keyboardType={'phone-pad'}
                 style={styles.inputs_row}
                 value={telefone}
                 placeholder="Telefone"
-                fontSize={18}
                 placeholderTextColor={colors.text}
                 onChangeText={text => setTelefone(text)}
               />
             </View>
 
-            {/* <TextInput
-              placeholder="Endereço"
-              placeholderTextColor={colors.text}
-              style={styles.inputs}
-            /> */}
             <TextInput
               placeholder="E-mail"
               placeholderTextColor={colors.text}
               style={styles.inputs}
-              fontSize={18}
               onChangeText={text => setEmail(text)}
             />
             <TextInput
               placeholder="Senha"
               placeholderTextColor={colors.text}
               style={styles.inputs}
-              fontSize={18}
               onChangeText={text => setSenha(text)}
             />
+            <TextInput
+              placeholder={endereco}
+              placeholderTextColor={colors.text}
+              multiline={true}
+              style={styles.input_big}
+              editable={editable}
+            />
 
-            <TouchableOpacity onPress={HandleLogin} style={styles.button}>
+            <TouchableOpacity onPress={HandleRegister} style={styles.button}>
               <Text style={styles.button_text}>Enviar</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <View style={styles.footer}>
-          <Text style={styles.footer_text}>Usuarios</Text>
-          <View style={styles.footer_oval}></View>
-        </View>
       </ImageBackground>
     </View>
   );
@@ -311,9 +384,22 @@ const styles = StyleSheet.create({
     height: verticalScale(50),
     borderRadius: 20,
     paddingHorizontal: 10,
-    marginBottom: verticalScale(15),
+    marginBottom: verticalScale(12),
     backgroundColor: colors.input,
-    fontSize: 16,
+    fontSize: 18,
+    color: colors.text,
+  },
+  input_big: {
+    width: '80%',
+    height: verticalScale(80),
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    marginBottom: verticalScale(12),
+    backgroundColor: colors.input,
+    fontSize: 18,
+    color: colors.text,
+    textAlign: 'left',
+    textAlignVertical: 'top',
   },
   inputs_row: {
     width: '48%',
@@ -321,7 +407,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     backgroundColor: colors.input,
-    fontSize: 16,
+    fontSize: 18,
+    color: colors.text,
   },
   button: {
     width: '30%',

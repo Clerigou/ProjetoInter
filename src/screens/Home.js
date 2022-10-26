@@ -77,39 +77,43 @@ const Home = ({navigation}) => {
     });
   }
 
-  function logOut() {
+  const logOut = () => {
     Animated.parallel([
       Animated.timing(boxOne, {
-        toValue: 0,
+        toValue: -1000,
         duration: 400,
         useNativeDriver: true,
       }),
       Animated.timing(boxTwo, {
-        toValue: 0,
+        toValue: -1000,
         duration: 600,
         useNativeDriver: true,
       }),
       Animated.timing(boxThree, {
-        toValue: 0,
+        toValue: -1000,
         duration: 800,
         useNativeDriver: true,
       }),
       Animated.timing(boxFour, {
-        toValue: 0,
+        toValue: -1000,
         duration: 1000,
         useNativeDriver: true,
       }),
-    ]).start();
-    auth()
-      .signOut()
-      .then(() => console.log('User signed out!'));
-  }
+    ]).start(() => {
+      auth()
+        .signOut()
+        .then(() => {
+          console.log('User signed out!');
+          navigation.navigate('Login');
+        });
+    });
+  };
 
   return (
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
-      <TopBarGeral buttonRight={'logout'} />
+      <TopBarGeral buttonRight={'logout'} logOut={logOut} />
       <View style={styles.containerTextIntro}>
         <Text style={styles.textUser}>Oi, {user.name}</Text>
         <Text style={styles.textIntro}>Selecione uma {'\n'}atividade</Text>
