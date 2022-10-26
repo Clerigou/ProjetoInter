@@ -36,7 +36,6 @@ export default function CadastroUsers({navigation}) {
   const [senha, setSenha] = useState('');
 
   const [cepValid, setCepValid] = useState(false);
-  const [editable, setEditable] = useState(true);
   const refDate = useRef();
 
   useEffect(() => {
@@ -334,7 +333,7 @@ export default function CadastroUsers({navigation}) {
               placeholderTextColor={colors.text}
               multiline={true}
               style={styles.input_big}
-              editable={editable}
+              editable={false}
             />
 
             <TouchableOpacity onPress={HandleRegister} style={styles.button}>

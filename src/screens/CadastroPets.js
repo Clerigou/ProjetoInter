@@ -49,9 +49,7 @@ export default function CadastroPets({navigation}) {
           backButton={true}
           homeButton={true}
         />
-        <View style={styles.header}>
-          <Text style={styles.header_text}> Cadastro de {'\n'} Pets</Text>
-        </View>
+
         <PetsForm />
       </ImageBackground>
     </View>
@@ -64,14 +62,5 @@ const styles = StyleSheet.create({
   container_back_img: {
     width: '100%',
     flex: 1,
-  },
-  header: {
-    width: '100%',
-    paddingLeft: scale(28),
-  },
-  header_text: {
-    fontSize: moderateScale(32),
-    color: colors.input,
-    fontWeight: 'bold',
   },
 });

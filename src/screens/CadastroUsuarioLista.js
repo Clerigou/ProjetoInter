@@ -108,16 +108,15 @@ const CadastroUsuarioLista = ({navigation}) => {
             <View style={styles.contentValues}>
               <Text style={styles.modalText}>Nome: {currentUser.name}</Text>
               <Text style={styles.modalText}>
-                CEP: {CEPMask(currentUser.cep.toString())}
+                CEP: {CEPMask(currentUser.cep)}
               </Text>
+              <Text>Endereço: {currentUser.endereco}</Text>
               <Text style={styles.modalText}>
                 Data: {currentUser.nascimento}
               </Text>
+              <Text style={styles.modalText}>CPF: {currentUser.cpf}</Text>
               <Text style={styles.modalText}>
-                CPF: {MaskCPF(currentUser.cpf.toString())}
-              </Text>
-              <Text style={styles.modalText}>
-                Número: {CellPhoneMask(currentUser.telefone)}
+                Número: {currentUser.telefone}
               </Text>
               <Text style={styles.modalText}>E-mail: {currentUser.email}</Text>
             </View>

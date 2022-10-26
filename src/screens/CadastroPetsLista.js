@@ -210,7 +210,7 @@ const CadastroPetsLista = ({navigation}) => {
                 <Text style={styles.modalText}>
                   Porte Fisico: {currentpets.porte}
                 </Text>
-                <Text style={styles.modalText}>Tipo: {currentpets.tipo}</Text>
+                <Text style={styles.modalText}>Data: {currentpets.data}</Text>
                 <Text style={styles.modalText}>Sexo: {currentpets.sexo}</Text>
                 <Text style={styles.modalText}>Idade: {currentpets.idade}</Text>
                 <Text style={styles.modalText}>
