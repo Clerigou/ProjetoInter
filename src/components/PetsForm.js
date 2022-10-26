@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import {
   View,
@@ -10,22 +10,22 @@ import {
   Modal,
   Image,
 } from 'react-native';
-import storage from '@react-native-firebase/storage';
 
+//components
+import InputSelect from './InputSelect';
 import {colors} from '../commonStyles';
 
+//context
+import {AuthContext} from '../contexts/auth';
+
+//librarys
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-import InputSelect from './InputSelect';
-
 import {TextInputMask} from 'react-native-masked-text';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+
+//firebase
+import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-import {
-  moderateScale,
-  ms,
-  scale,
-  verticalScale,
-} from 'react-native-size-matters';
 
 const pickerOptions = {
   width: 512,
@@ -58,6 +58,8 @@ export default function PetsForm() {
   const [data, setData] = useState();
   const [observacoes, setObservacoes] = useState('Sem observações');
 
+  const {setCommonModal, setMsg} = useContext(AuthContext);
+
   function openGaleria() {
     ImagePicker.openPicker(pickerOptions)
       .then(images => {
@@ -67,7 +69,7 @@ export default function PetsForm() {
           name: `IMG_${new Date().getTime()}.${images.path.split('/')[1]}`,
         });
       })
-      .catch(err => console.warn('Erro ao tentar selecionar a foto ', err));
+      .catch(err => console.log('Erro ao tentar selecionar a foto ', err));
   }
 
   const openCamera = () => {
@@ -79,7 +81,7 @@ export default function PetsForm() {
           name: `IMG_${new Date().getTime()}.${images.path.split('/')[1]}`,
         });
       })
-      .catch(err => console.warn('Erro ao tentar selecionar a foto ', err));
+      .catch(err => console.log('Erro ao tentar selecionar a foto ', err));
   };
 
   async function registerPet() {
@@ -120,7 +122,7 @@ export default function PetsForm() {
   }
 
   function validate() {
-    let msg = 'Sucesso na validação';
+    let msg = '';
     let status = true;
     if (!nome || !doencas || !vacinas || !data || !sexo) {
       status = false;

@@ -20,7 +20,9 @@ import {CommonActions} from '@react-navigation/native';
 
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
-import ErrorModal from '../components/ErrorModal';
+import CommonModal from '../components/CommonModal';
+
+import {showModal} from '../global/showModal';
 
 import {AuthContext} from '../contexts/auth';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
@@ -29,9 +31,7 @@ export default Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errorModal, setErrorModal] = useState(false);
-  const [index, setIndex] = useState(null);
-  const {user, setUser} = useContext(AuthContext);
+  const {setCommonModal, setUser, setMsg} = useContext(AuthContext);
 
   const passRef = useRef();
 
@@ -87,53 +87,55 @@ export default Login = ({navigation}) => {
     });
   }
 
-  function showModal(index) {
-    setIndex(index);
-    setErrorModal(true);
+  function showModal(obj) {
+    setMsg(obj);
+    setCommonModal(true);
+    setLoading(false);
   }
 
   async function logando() {
     Keyboard.dismiss();
     if (!email || !password) {
       setLoading(false);
-      return showModal(0);
-
-      Alert.alert('Email ou senha vazio', 'preencha todos os campos!');
+      return showModal({
+        titulo: 'Erro!',
+        msg: 'Email ou senha vazio \n preencha todos os campos!',
+      });
     }
     setLoading(true);
 
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(async () => {
-        console.log('passando pelo primeiro then login');
-
         const user = await firestore()
           .collection('Users')
           .doc(`${email}`)
           .get()
 
           .then(res => {
-            console.log('segundo then do login', res);
-
             setUser(res._data);
             loginAnimation();
           });
       })
       .catch(error => {
         if (error.code === 'auth/invalid-email') {
-          Alert.alert('Email incorreto', 'Email invalido!');
+          return showModal({
+            titulo: 'Erro!',
+            msg: 'Email invalido!',
+          });
         }
         if (error.code === 'auth/wrong-password') {
-          Alert.alert('Login Incorreto', 'Email ou senha incorreto!');
+          return showModal({
+            titulo: 'Erro!',
+            msg: 'Login Incorreto \n Email ou senha incorreto!',
+          });
         }
         if (error.code === 'auth/user-not-found') {
-          Alert.alert(
-            'Usúario não encontrado',
-            'Úsuario não encontrado, verifique se o email foi digitado corretamente!',
-          );
+          return showModal({
+            titulo: 'Erro!',
+            msg: 'Usúario não encontrado \n verifique se o email e senha foram digitados corretamente!',
+          });
         }
-        console.error(error);
-        setLoading(false);
       });
   }
 
@@ -143,11 +145,7 @@ export default Login = ({navigation}) => {
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}
         resizeMode={'stretch'}>
-        <ErrorModal
-          errorModal={errorModal}
-          setErrorModal={setErrorModal}
-          index={index}
-        />
+        <CommonModal />
         <TopBarGeral backButton={true} navigation={navigation} />
         <Animated.View style={styles.body}>
           <Animated.View style={[styles.titulo_container, {opacity: opacity}]}>

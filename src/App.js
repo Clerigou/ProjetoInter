@@ -16,7 +16,6 @@ const App = () => {
     <WithSplashScreen isAppReady={isAppReady}>
       <Routes />
     </WithSplashScreen>
-    // <CadastroPetsLista />
   );
 };
 

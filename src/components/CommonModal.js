@@ -1,23 +1,30 @@
-import React from 'react';
+import React, {useContext} from 'react';
 
 import {StyleSheet, Text, View, Modal, Pressable} from 'react-native';
-import {scale} from 'react-native-size-matters';
+import {scale, verticalScale} from 'react-native-size-matters';
 import {colors} from '../commonStyles';
 
-export default function ErrorModal({errorModal, setErrorModal, index}) {
-  const msg = ['Email ou senha vazio \n preencha todos os campos!', 'blabla'];
+import {AuthContext} from '../contexts/auth';
+
+export default function CommonModal() {
+  const {commonModal, setCommonModal, msg} = useContext(AuthContext);
+
   return (
-    <Modal transparent={true} visible={errorModal}>
-      <Pressable onPress={() => setErrorModal(false)} style={styles.modal}>
+    <Modal transparent={true} visible={commonModal}>
+      <Pressable onPress={() => setCommonModal(false)} style={styles.modal}>
         <View style={styles.modal_container}>
           <View style={styles.error_titulo}>
-            <Text style={styles.error_titulo_text}> Erro! </Text>
+            <Text style={styles.error_titulo_text}>{msg.titulo}</Text>
           </View>
+
           <View style={styles.error}>
-            <Text style={styles.error_text}>{msg[index]}</Text>
+            <Text style={styles.error_text}>{msg.msg}</Text>
           </View>
-          <View style={styles.buttonOk}>
-            <Text> Ok </Text>
+
+          <View style={styles.footer}>
+            <View style={styles.buttonOk}>
+              <Text style={styles.buttonOk_text}> Ok </Text>
+            </View>
           </View>
         </View>
       </Pressable>
@@ -34,18 +41,18 @@ const styles = StyleSheet.create({
   modal_container: {
     width: '85%',
     backgroundColor: colors.background_secundary,
-    height: '25%',
-    justifyContent: 'flex-end',
+    height: '30%',
+    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
-    paddingTop: scale(20),
+    paddingTop: scale(15),
+    paddingBottom: scale(10),
   },
   error_titulo: {
-    width: '30%',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    borderRadius: 30,
     backgroundColor: colors.background_primary_dark,
   },
   error_titulo_text: {
@@ -53,8 +60,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
+
   error: {
-    marginTop: scale(20),
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   error_text: {
     fontSize: 19,
@@ -62,13 +72,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  buttonOk: {
+  footer: {
     width: '100%',
-    height: '25%',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    alignItems: 'center',
+  },
+  buttonOk: {
+    width: '30%',
+    padding: 5,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background_primary_dark,
+  },
+  buttonOk_text: {
+    fontSize: 20,
+    color: colors.text,
   },
 });
