@@ -24,6 +24,7 @@ import {AuthContext} from '../contexts/auth';
 import storage from '@react-native-firebase/storage';
 
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
 const CadastroPetsLista = ({navigation}) => {
   const [currentpets, setCurrentPets] = useState({});
@@ -202,22 +203,40 @@ const CadastroPetsLista = ({navigation}) => {
                 <View style={styles.pictureContent}>
                   <Image style={styles.picture} source={{uri: url}} />
                 </View>
-                <Text style={styles.modalText}>Nome: {currentpets.name}</Text>
-                <Text style={styles.modalText}>Raca: {currentpets.raca}</Text>
                 <Text style={styles.modalText}>
-                  Pelagem: {currentpets.pelagem}
+                  <Text style={styles.textZoomModal}>Nome:</Text>{' '}
+                  {currentpets.name}
                 </Text>
                 <Text style={styles.modalText}>
-                  Porte Fisico: {currentpets.porte}
-                </Text>
-                <Text style={styles.modalText}>Data: {currentpets.data}</Text>
-                <Text style={styles.modalText}>Sexo: {currentpets.sexo}</Text>
-                <Text style={styles.modalText}>Idade: {currentpets.idade}</Text>
-                <Text style={styles.modalText}>
-                  Vacinas: {currentpets.vacinas}
+                  <Text style={styles.textZoomModal}>Raça:</Text>{' '}
+                  {currentpets.raca}
                 </Text>
                 <Text style={styles.modalText}>
-                  Observações:{' '}
+                  <Text style={styles.textZoomModal}>Pelagem:</Text>{' '}
+                  {currentpets.pelagem}
+                </Text>
+                <Text style={styles.modalText}>
+                  <Text style={styles.textZoomModal}>Porte Físico:</Text>{' '}
+                  {currentpets.porte}
+                </Text>
+                <Text style={styles.modalText}>
+                  <Text style={styles.textZoomModal}>Data:</Text>{' '}
+                  {currentpets.data}
+                </Text>
+                <Text style={styles.modalText}>
+                  <Text style={styles.textZoomModal}>Sexo:</Text>{' '}
+                  {currentpets.sexo}
+                </Text>
+                <Text style={styles.modalText}>
+                  <Text style={styles.textZoomModal}>Idade:</Text>{' '}
+                  {currentpets.idade}
+                </Text>
+                <Text style={styles.modalText}>
+                  <Text style={styles.textZoomModal}>Vacinas:</Text>{' '}
+                  {currentpets.vacinas}
+                </Text>
+                <Text style={styles.modalText}>
+                  <Text style={styles.textZoomModal}>Observações:</Text>{' '}
                   {currentpets.obs.length > 12
                     ? `${currentpets.obs.slice(0, 25)}...`
                     : currentpets.obs}
@@ -243,7 +262,7 @@ const CadastroPetsLista = ({navigation}) => {
                     <TouchableOpacity>
                       <MaterialIcons
                         name="check"
-                        size={24}
+                        size={scale(24)}
                         color={'#6ffc03'}
                         onPress={() => {
                           onSetPDFName();
@@ -271,21 +290,25 @@ const styles = StyleSheet.create({
   },
   textUser: {
     color: colors.input,
-    fontSize: 26,
+    fontSize: scale(22),
   },
   containerTextIntro: {
-    paddingLeft: 30,
-    marginTop: 20,
+    paddingLeft: moderateScale(30),
+    marginTop: moderateScale(20),
   },
   textIntro: {
     color: colors.background_primary_dark,
-    fontSize: 28,
+    fontSize: scale(24),
     fontWeight: 'bold',
   },
-
+  textZoomModal: {
+    color: colors.background_primary_dark,
+    fontSize: scale(20),
+    fontWeight: 'bold',
+  },
   cardContainer: {
     width: '100%',
-    height: '70%',
+    height: verticalScale(480),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -299,9 +322,9 @@ const styles = StyleSheet.create({
   },
   modalZoom: {
     width: '90%',
-    height: '80%',
+    height: verticalScale(550),
     backgroundColor: colors.background_secundary,
-    padding: 24,
+    padding: moderateScale(24),
     borderRadius: 24,
   },
   closeIcon: {
@@ -309,41 +332,41 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   modalText: {
-    fontSize: 20,
+    fontSize: scale(18),
     color: 'black',
     fontWeight: '300',
   },
   contentValues: {
     flex: 1,
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: moderateScale(20),
     justifyContent: 'flex-end',
   },
   pictureContent: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    backgroundColor: 'gray',
+    width: scale(150),
+    height: scale(150),
+    borderRadius: moderateScale(80),
+    backgroundColor: colors.background_primary_dark,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: moderateScale(20),
   },
   picture: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: scale(135),
+    height: scale(135),
+    borderRadius: moderateScale(70),
   },
   savePDF: {
     width: '80%',
-    height: 40,
+    height: scale(38),
     backgroundColor: colors.background_primary,
     borderRadius: 15,
     alignSelf: 'center',
-    marginTop: 15,
+    marginTop: moderateScale(15),
     flexDirection: 'row',
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: moderateScale(10),
+    paddingRight: moderateScale(10),
     justifyContent: 'space-between',
     alignItems: 'center',
   },

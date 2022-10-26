@@ -11,7 +11,7 @@ import {
   Animated,
 } from 'react-native';
 
-import {CellPhoneMask, MaskCPF, CEPMask} from '../global/mask';
+import {CellPhoneMask, CEPMask} from '../global/mask';
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
 import UsersCard from '../components/UsersCard';
@@ -20,6 +20,8 @@ import firestore from '@react-native-firebase/firestore';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AuthContext} from '../contexts/auth';
 
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+
 const CadastroUsuarioLista = ({navigation}) => {
   const [zoomModal, setZoomModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
@@ -27,6 +29,7 @@ const CadastroUsuarioLista = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const {opacity} = useContext(AuthContext);
 
+  console.log(data);
   const handleZoomModal = user => {
     setZoomModal(!zoomModal);
     setCurrentUser(user);
@@ -106,19 +109,33 @@ const CadastroUsuarioLista = ({navigation}) => {
               <MaterialIcons name="close-circle" size={29} />
             </TouchableOpacity>
             <View style={styles.contentValues}>
-              <Text style={styles.modalText}>Nome: {currentUser.name}</Text>
               <Text style={styles.modalText}>
-                CEP: {CEPMask(currentUser.cep)}
+                <Text style={styles.textZoomModal}>Nome:</Text>{' '}
+                {currentUser.name}
               </Text>
-              <Text>Endereço: {currentUser.endereco}</Text>
               <Text style={styles.modalText}>
-                Data: {currentUser.nascimento}
+                <Text style={styles.textZoomModal}>Endereço:</Text>{' '}
+                {currentUser.endereco}
               </Text>
-              <Text style={styles.modalText}>CPF: {currentUser.cpf}</Text>
               <Text style={styles.modalText}>
-                Número: {currentUser.telefone}
+                <Text style={styles.textZoomModal}>CEP:</Text>{' '}
+                {CEPMask(currentUser.cep)}
               </Text>
-              <Text style={styles.modalText}>E-mail: {currentUser.email}</Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.textZoomModal}>Data:</Text>{' '}
+                {currentUser.nascimento}
+              </Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.textZoomModal}>CPF:</Text> {currentUser.cpf}
+              </Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.textZoomModal}>Número:</Text>{' '}
+                {CellPhoneMask(currentUser.telefone)}
+              </Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.textZoomModal}>E-mail:</Text>{' '}
+                {currentUser.email}
+              </Text>
             </View>
           </View>
         </View>
@@ -133,22 +150,26 @@ const styles = StyleSheet.create({
   },
   textUser: {
     color: colors.input,
-    fontSize: 26,
+    fontSize: scale(24),
   },
   containerTextIntro: {
-    paddingLeft: 30,
-    marginTop: 20,
+    paddingLeft: moderateScale(30),
+    marginTop: verticalScale(20),
   },
   textIntro: {
     color: colors.background_primary_dark,
-    fontSize: 28,
+    fontSize: scale(26),
     fontWeight: 'bold',
   },
-
+  textZoomModal: {
+    color: colors.background_primary_dark,
+    fontSize: scale(22),
+    fontWeight: 'bold',
+  },
   cardContainer: {
     width: '100%',
-    height: '70%',
-    padding: 10,
+    height: verticalScale(480),
+    padding: moderateScale(10),
     alignItems: 'center',
   },
   modalContainer: {
@@ -161,9 +182,9 @@ const styles = StyleSheet.create({
   },
   modalZoom: {
     width: '90%',
-    height: '60%',
+    height: verticalScale(400),
     backgroundColor: colors.background_secundary,
-    padding: 24,
+    padding: moderateScale(24),
     borderRadius: 24,
   },
   closeIcon: {
@@ -171,13 +192,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   modalText: {
-    fontSize: 20,
+    fontSize: scale(18),
     color: 'black',
     fontWeight: '300',
   },
   contentValues: {
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: moderateScale(30),
   },
 });
 
