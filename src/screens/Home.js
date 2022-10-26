@@ -194,7 +194,7 @@ const Home = ({navigation}) => {
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.botao}>
             <Text
-              onPress={() => navigation.navigate('Pets')}
+              onPress={() => navigation.navigate('CadastroPetsLista')}
               style={styles.botao_text}>
               Lista de Pets
             </Text>

@@ -9,11 +9,13 @@ import {
   TouchableOpacity,
   Modal,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
 //components
 import InputSelect from './InputSelect';
 import {colors} from '../commonStyles';
+import CommonModal from './CommonModal';
 
 //context
 import {AuthContext} from '../contexts/auth';
@@ -57,6 +59,7 @@ export default function PetsForm() {
   const [vacinas, setVacinas] = useState();
   const [data, setData] = useState();
   const [observacoes, setObservacoes] = useState('Sem observações');
+  const [loading, setLoading] = useState(false);
 
   const {setCommonModal, setMsg} = useContext(AuthContext);
 
@@ -101,25 +104,37 @@ export default function PetsForm() {
         obs: observacoes,
       })
       .then(() => {
-        enviar();
-        console.log('Pet Criado com sucesso');
+        sendImage();
       });
   }
 
-  async function enviar() {
+  async function sendImage() {
     const reference = storage().ref(`Pets/${nome}`);
     const pathToFile = imagemEscolhida.uri;
-    await reference.putFile(pathToFile);
+    await reference.putFile(pathToFile).then(() => {
+      return showModal({
+        titulo: 'Sucesso!',
+        msg: 'Pet cadastrado com sucesso!',
+      });
+    });
   }
 
-  function HandleRegister() {
+  function showModal(obj) {
+    setMsg(obj);
+    setCommonModal(true);
+    setLoading(false);
+  }
+  const HandleRegister = () => {
     const validar = validate();
     if (validar.status) {
       registerPet();
     } else {
-      console.log(validar.msg);
+      return showModal({
+        titulo: 'Erro!',
+        msg: validar.msg,
+      });
     }
-  }
+  };
 
   function validate() {
     let msg = '';
@@ -127,7 +142,7 @@ export default function PetsForm() {
     if (!nome || !doencas || !vacinas || !data || !sexo) {
       status = false;
       msg =
-        'Preencha todos os campos: Nome, doenças, vacinas, data e sexo não podem estar vazios!';
+        'Preencha todos os campos:\nNome, doenças, vacinas, data e sexo não podem estar vazios!';
     }
     return {
       msg: msg,
@@ -145,6 +160,7 @@ export default function PetsForm() {
           <Icon name="camera" size={moderateScale(32)} color={colors.text} />
         </TouchableOpacity>
       </View>
+      <CommonModal />
       <Modal
         onRequestClose={() => {
           setVisible(false);
@@ -273,8 +289,12 @@ export default function PetsForm() {
           onChangeText={text => setObservacoes(text)}
         />
 
-        <Pressable onPress={registerPet} style={styles.button}>
-          <Text style={styles.button_text}>Enviar</Text>
+        <Pressable onPress={HandleRegister} style={styles.button}>
+          {!loading ? (
+            <Text style={styles.button_text}>Enviar</Text>
+          ) : (
+            <ActivityIndicator size={'large'} color={colors.text} />
+          )}
         </Pressable>
       </View>
     </View>

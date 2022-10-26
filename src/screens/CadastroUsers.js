@@ -1,4 +1,3 @@
-import {transform} from '@babel/core';
 import React, {useEffect, useState, useContext, useRef} from 'react';
 
 import {
@@ -8,23 +7,30 @@ import {
   ScrollView,
   TextInput,
   Text,
-  Pressable,
   Animated,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
+//components
 import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
+//context
 import {AuthContext} from '../contexts/auth';
-import {TextInputMask} from 'react-native-masked-text';
 
+//firebase
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+
+//librarys
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+import {TextInputMask} from 'react-native-masked-text';
+import CommonModal from '../components/CommonModal';
+import {loadPartialConfig} from '@babel/core';
 
 export default function CadastroUsers({navigation}) {
-  const {opacity} = useContext(AuthContext);
+  const {opacity, setMsg, setCommonModal} = useContext(AuthContext);
 
   const [nome, setNome] = useState('');
   const [cep, setCep] = useState('cep');
@@ -34,7 +40,7 @@ export default function CadastroUsers({navigation}) {
   const [endereco, setEndereco] = useState('Endereço');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-
+  const [loading, setLoading] = useState(false);
   const [cepValid, setCepValid] = useState(false);
   const refDate = useRef();
 
@@ -49,7 +55,6 @@ export default function CadastroUsers({navigation}) {
             setEndereco(
               `${json.logradouro}, ${json.bairro}, ${json.localidade}-${json.uf}`,
             );
-            setEditable(false);
           }
         });
     };
@@ -105,29 +110,53 @@ export default function CadastroUsers({navigation}) {
             cpf: cpf,
             nascimento: nascimento,
             telefone: telefone,
+            endereco: endereco,
             email: email,
             admin: false,
           })
           .then(() => {
-            console.log('User criado com sucesso!');
+            showModal({
+              titulo: 'Sucesso!',
+              msg: 'Usuário criado com sucesso!',
+            });
           })
           .catch(error => {
-            console.log(error);
+            showModal({
+              titulo: 'Error',
+              msg: 'Erro ao criar usuário',
+            });
           });
+      })
+      .catch(() => {
+        showModal({
+          titulo: 'Error',
+          msg: 'Erro de conexão',
+        });
       });
+  }
+
+  function showModal(obj) {
+    setMsg(obj);
+    setCommonModal(true);
+    setLoading(false);
   }
 
   function HandleRegister() {
     const validar = validate();
+    console.log(validar);
+
     if (validar.status) {
       createUser();
     } else {
-      console.log(validar.msg);
+      return showModal({
+        titulo: 'Erro!',
+        msg: validar.msg,
+      });
     }
   }
 
   function validate() {
-    let msg = 'Sucesso na validação';
+    let msg = '';
     let status = true;
     if (!nome || !nascimento || !senha) {
       status = false;
@@ -165,7 +194,7 @@ export default function CadastroUsers({navigation}) {
   }
 
   function validateTel(tel) {
-    var reg = new RegExp('^\\([0-9]{2}\\)(9-[0-9]{4}-[0-9]{4})$');
+    var reg = new RegExp('^\\([0-9]{2}\\)((9-[0-9]{4}-[0-9]{4}))$');
     reg.test(tel);
   }
 
@@ -245,6 +274,7 @@ export default function CadastroUsers({navigation}) {
       <ImageBackground
         source={require('../../assets/images/Segunda_tela_background.png')}
         style={styles.container_back_img}>
+        <CommonModal />
         <TopBarGeral
           navigation={navigation}
           backButton={true}
@@ -337,7 +367,11 @@ export default function CadastroUsers({navigation}) {
             />
 
             <TouchableOpacity onPress={HandleRegister} style={styles.button}>
-              <Text style={styles.button_text}>Enviar</Text>
+              {!loading ? (
+                <Text style={styles.button_text}>Enviar</Text>
+              ) : (
+                <ActivityIndicator size={'large'} color={colors.text} />
+              )}
             </TouchableOpacity>
           </View>
         </ScrollView>
