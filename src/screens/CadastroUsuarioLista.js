@@ -73,13 +73,16 @@ const CadastroUsuarioLista = ({navigation}) => {
       <StatusBar hidden />
       <TopBarGeral backButton navigation={navigation} />
       <View style={styles.containerTextIntro}>
-        <Text style={styles.textIntro}>Cadastro de{'\n'}Usuários</Text>
-        <Text style={styles.textUser}>Usuários</Text>
+        <Text style={styles.textIntro}>Lista de{'\n'}Usuários</Text>
       </View>
       <View style={styles.cardContainer}>
         <FlatList
           numColumns={2}
           data={data}
+          style={{
+            paddingHorizontal: scale(10),
+            paddingTop: scale(8),
+          }}
           keyExtractor={item => item}
           renderItem={({item}) => (
             <UsersCard
@@ -93,7 +96,9 @@ const CadastroUsuarioLista = ({navigation}) => {
           )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
-            {paddingBottom: 100},
+            {
+              paddingBottom: 60,
+            },
             data.length === 0 && {
               flex: 1,
             },
@@ -163,14 +168,15 @@ const styles = StyleSheet.create({
   },
   textZoomModal: {
     color: colors.background_primary_dark,
-    fontSize: scale(22),
+    fontSize: moderateScale(23),
     fontWeight: 'bold',
   },
   cardContainer: {
     width: '100%',
-    height: verticalScale(480),
-    padding: moderateScale(10),
+    flex: 1,
+    padding: moderateScale(9),
     alignItems: 'center',
+    justifyContent: 'center',
   },
   modalContainer: {
     width: '100%',
@@ -192,9 +198,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   modalText: {
-    fontSize: scale(18),
+    fontSize: moderateScale(19),
     color: 'black',
-    fontWeight: '300',
+    fontWeight: 'bold',
   },
   contentValues: {
     alignSelf: 'center',

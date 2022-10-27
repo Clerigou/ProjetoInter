@@ -158,15 +158,19 @@ export default function CadastroUsers({navigation}) {
   function validate() {
     let msg = '';
     let status = true;
-    if (!nome || !nascimento || !senha) {
+    if (!nome) {
       status = false;
-      msg = 'Preencha todos os campos';
+      msg = 'Nome nao pode ser vazio';
     }
-
-    if (!validateTel(telefone)) {
+    if (senha.length < 6) {
+      status = false;
+      msg = 'Senha muito curta, escolha uma senha entre 6 e 16 digitos';
+    }
+    if (telefone.length < 14) {
       status = false;
       msg = 'Telefone inválido';
     }
+
     if (!TestaCPF(cpf)) {
       status = false;
       msg = 'Cpf inválido';
@@ -193,50 +197,37 @@ export default function CadastroUsers({navigation}) {
     };
   }
 
-  function validateTel(tel) {
-    var reg = new RegExp('^\\([0-9]{2}\\)((9-[0-9]{4}-[0-9]{4}))$');
-    reg.test(tel);
-  }
-
   function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
   }
 
   function validateData(s) {
+    if (s.length < 10) return false;
     var l = s.length;
     var j = 0;
     var dt = {0: '', 1: '', 2: ''};
 
-    // dias de cada mês
     var n = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-    // divide a data para o objeto "dt"
     for (var i = 0; i < l; i++) {
       var c = s[i];
       if (c !== '/') dt[j] += c;
       else j++;
     }
 
-    // converte strings em número
     var d = +dt[0];
     var m = +dt[1];
     var y = +dt[2];
 
-    // atualiza dias do ano bisexto
     n[2] += +(y % 400 === 0 || (y % 4 === 0 && y % 100 !== 0));
 
-    // regras de validação
-    // mês deve ser entre 1-12 e dia deve ser maior que zero
     if (m < 1 || m > 12 || d < 1) {
       return false;
-    }
-    // valida número de dias do mês
-    else if (d > n[m]) {
+    } else if (d > n[m]) {
       return false;
     }
 
-    // passou nas validações
     return true;
   }
 
@@ -307,6 +298,7 @@ export default function CadastroUsers({navigation}) {
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCep(text)}
                 type={'custom'}
+                keyboardType="numeric"
                 options={{
                   mask: '99999999',
                 }}
@@ -317,6 +309,7 @@ export default function CadastroUsers({navigation}) {
                 placeholderTextColor={colors.text}
                 onChangeText={text => setNascimento(text)}
                 type={'datetime'}
+                keyboardType="numeric"
                 ref={refDate}
                 options={{
                   format: 'DD/MM/YYYY',
@@ -329,13 +322,14 @@ export default function CadastroUsers({navigation}) {
                 placeholder="CPF"
                 type={'cpf'}
                 value={cpf}
+                keyboardType="numeric"
                 placeholderTextColor={colors.text}
                 onChangeText={text => setCpf(text)}
               />
               <TextInputMask
                 type={'custom'}
                 options={{
-                  mask: '(99)9-9999-9999',
+                  mask: '(99)99999-9999',
                 }}
                 keyboardType={'phone-pad'}
                 style={styles.inputs_row}
@@ -350,12 +344,14 @@ export default function CadastroUsers({navigation}) {
               placeholder="E-mail"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              keyboardType="email-address"
               onChangeText={text => setEmail(text)}
             />
             <TextInput
               placeholder="Senha"
               placeholderTextColor={colors.text}
               style={styles.inputs}
+              keyboardType="visible-password"
               onChangeText={text => setSenha(text)}
             />
             <TextInput
@@ -414,8 +410,8 @@ const styles = StyleSheet.create({
   },
   inputs: {
     width: '80%',
-    height: verticalScale(50),
-    borderRadius: 20,
+    height: verticalScale(48),
+    borderRadius: 35,
     paddingHorizontal: 10,
     marginBottom: verticalScale(12),
     backgroundColor: colors.input,
@@ -425,7 +421,7 @@ const styles = StyleSheet.create({
   input_big: {
     width: '80%',
     height: verticalScale(80),
-    borderRadius: 20,
+    borderRadius: 22,
     paddingHorizontal: 10,
     marginBottom: verticalScale(12),
     backgroundColor: colors.input,
@@ -436,8 +432,8 @@ const styles = StyleSheet.create({
   },
   inputs_row: {
     width: '48%',
-    height: verticalScale(46),
-    borderRadius: 20,
+    height: verticalScale(44),
+    borderRadius: 35,
     paddingHorizontal: 10,
     backgroundColor: colors.input,
     fontSize: 18,

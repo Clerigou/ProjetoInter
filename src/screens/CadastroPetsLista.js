@@ -37,14 +37,14 @@ const CadastroPetsLista = ({navigation}) => {
   const [zoomLoading, setZoomLoading] = useState(true);
   const [url, setUrl] = useState();
 
-  async function getUrl() {
+  async function getUrl(pet) {
+    console.log('chamou url');
+
     const url = await storage()
-      .ref(`Pets/${currentpets.name}`)
+      .ref(`Pets/${pet.name}`)
       .getDownloadURL()
 
       .then(res => {
-        console.log(res);
-
         setUrl(res);
         setZoomLoading(false);
       });
@@ -77,16 +77,11 @@ const CadastroPetsLista = ({navigation}) => {
     return () => subscriber();
   }, []);
 
-  useEffect(() => {
-    if (currentpets.name) {
-      getUrl();
-    }
-  }, [currentpets]);
-
   const handlePets = pets => {
     setZoomModal(!zoomModal);
     setCurrentPets(pets);
     setSavePDF(true);
+    getUrl(pets);
   };
 
   const createPDF = async () => {
@@ -162,12 +157,15 @@ const CadastroPetsLista = ({navigation}) => {
       <TopBarGeral backButton navigation={navigation} />
       <View style={styles.containerTextIntro}>
         <Text style={styles.textIntro}>Lista de{'\n'}Animais Resgatados</Text>
-        <Text style={styles.textUser}>Pets</Text>
       </View>
       <View style={styles.cardContainer}>
         <FlatList
           numColumns={2}
           data={data}
+          style={{
+            paddingHorizontal: scale(10),
+            paddingTop: scale(8),
+          }}
           keyExtractor={item => item}
           renderItem={({item}) => (
             <PetsCard
@@ -182,7 +180,7 @@ const CadastroPetsLista = ({navigation}) => {
           )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
-            {paddingBottom: 100},
+            {paddingBottom: 60},
             data.length === 0 && {flex: 1},
           ]}
         />
@@ -237,7 +235,7 @@ const CadastroPetsLista = ({navigation}) => {
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Observações:</Text>{' '}
-                  {currentpets.obs.length > 12
+                  {currentpets.obs.length > 20
                     ? `${currentpets.obs.slice(0, 25)}...`
                     : currentpets.obs}
                 </Text>
@@ -293,17 +291,18 @@ const styles = StyleSheet.create({
     fontSize: scale(22),
   },
   containerTextIntro: {
-    paddingLeft: moderateScale(30),
-    marginTop: moderateScale(20),
+    paddingLeft: scale(30),
+    marginTop: verticalScale(20),
+    marginBottom: verticalScale(10),
   },
   textIntro: {
     color: colors.background_primary_dark,
-    fontSize: scale(24),
+    fontSize: moderateScale(28),
     fontWeight: 'bold',
   },
   textZoomModal: {
     color: colors.background_primary_dark,
-    fontSize: scale(20),
+    fontSize: moderateScale(22),
     fontWeight: 'bold',
   },
   cardContainer: {
@@ -334,7 +333,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: scale(18),
     color: 'black',
-    fontWeight: '300',
+    fontWeight: 'bold',
   },
   contentValues: {
     flex: 1,

@@ -22,6 +22,7 @@ import {AuthContext} from '../contexts/auth';
 
 //librarys
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IconFeather from 'react-native-vector-icons/Feather';
 import {TextInputMask} from 'react-native-masked-text';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
@@ -47,7 +48,7 @@ const dataSexo = [
 ];
 
 export default function PetsForm() {
-  const [imagemEscolhida, setImagemEscolhida] = useState([]);
+  const [imagemEscolhida, setImagemEscolhida] = useState(null);
   const [visible, setVisible] = useState(false);
   const [nome, setNome] = useState();
   const [raca, setRaca] = useState('Não especificada');
@@ -142,7 +143,7 @@ export default function PetsForm() {
     if (!nome || !doencas || !vacinas || !data || !sexo) {
       status = false;
       msg =
-        'Preencha todos os campos:\nNome, doenças, vacinas, data e sexo não podem estar vazios!';
+        'Preencha todos os campos:\nNome, doença, vacinas, data e sexo não podem estar vazios!';
     }
     return {
       msg: msg,
@@ -164,7 +165,6 @@ export default function PetsForm() {
       <Modal
         onRequestClose={() => {
           setVisible(false);
-          setImagemEscolhida(null);
         }}
         animationType={'slide'}
         transparent={true}
@@ -177,9 +177,11 @@ export default function PetsForm() {
           <View style={styles.modal_container}>
             <View style={styles.modal_image_container}>
               {imagemEscolhida === null ? (
-                <Text style={styles.modal_image_text}>
-                  Imagem {'\n'} nao {'\n'} selecionada
-                </Text>
+                <IconFeather
+                  name="camera-off"
+                  size={moderateScale(60)}
+                  color={colors.background_primary_dark}
+                />
               ) : (
                 <Image
                   source={{uri: imagemEscolhida.uri}}
@@ -188,17 +190,57 @@ export default function PetsForm() {
                 />
               )}
             </View>
-            <TouchableOpacity onPress={openCamera} style={styles.modal_button}>
-              <Text style={styles.modal_button_text}> Tirar foto </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={openGaleria} style={styles.modal_button}>
-              <Text style={styles.modal_button_text}> Abrir galeria </Text>
-            </TouchableOpacity>
+            <View style={{width: '100%', alignItems: 'center'}}>
+              <Text
+                style={{
+                  fontSize: moderateScale(20),
+                  fontWeight: 'bold',
+                  color: colors.background_primary_dark,
+                  marginBottom: verticalScale(30),
+                }}>
+                {' '}
+                Adicione uma foto para o pet:{' '}
+              </Text>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                }}>
+                <TouchableOpacity
+                  onPress={openCamera}
+                  style={styles.modal_button_option}>
+                  <Icon
+                    name="camera"
+                    size={moderateScale(28)}
+                    color={'white'}
+                  />
+
+                  <Text style={styles.modal_button_textOption}>
+                    {' '}
+                    Usar camera{' '}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={openGaleria}
+                  style={styles.modal_button_option}>
+                  <Icon
+                    name="picture-o"
+                    size={moderateScale(32)}
+                    color={'white'}
+                  />
+                  <Text style={styles.modal_button_textOption}>
+                    {' '}
+                    Abrir galeria{' '}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
             <TouchableOpacity
               onPress={() => setVisible(false)}
               style={styles.modal_button}>
-              <Text style={styles.modal_button_text}> Ok</Text>
+              <Text style={styles.modal_button_text}>Ok</Text>
             </TouchableOpacity>
           </View>
         </Pressable>
@@ -341,8 +383,8 @@ const styles = StyleSheet.create({
   },
   inputs: {
     width: '80%',
-    height: verticalScale(50),
-    borderRadius: 20,
+    height: verticalScale(48),
+    borderRadius: 35,
     paddingHorizontal: 10,
     marginBottom: verticalScale(15),
     backgroundColor: colors.input,
@@ -351,8 +393,8 @@ const styles = StyleSheet.create({
   },
   inputs_row: {
     width: '48%',
-    height: verticalScale(46),
-    borderRadius: 20,
+    height: verticalScale(44),
+    borderRadius: 35,
     paddingHorizontal: 10,
     backgroundColor: colors.input,
     fontSize: 20,
@@ -361,7 +403,7 @@ const styles = StyleSheet.create({
   input_big: {
     width: '80%',
     height: verticalScale(80),
-    borderRadius: 20,
+    borderRadius: 22,
     paddingHorizontal: 10,
     marginBottom: verticalScale(15),
     backgroundColor: colors.input,
@@ -392,23 +434,19 @@ const styles = StyleSheet.create({
     width: '85%',
     backgroundColor: colors.background_secundary,
     height: '85%',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     borderRadius: 20,
   },
   modal_image_container: {
-    borderWidth: 1,
+    borderWidth: 8,
     width: moderateScale(220),
     height: moderateScale(220),
     borderRadius: 240 / 2,
-    backgroundColor: colors.background_primary_dark,
+    backgroundColor: colors.text,
     justifyContent: 'center',
+    borderColor: colors.background_primary,
     alignItems: 'center',
-  },
-  modal_image_text: {
-    fontSize: 25,
-    color: colors.text,
-    textAlign: 'center',
   },
   modal_image: {
     width: moderateScale(220),
@@ -416,7 +454,6 @@ const styles = StyleSheet.create({
     borderRadius: 240 / 2,
   },
   modal_button: {
-    borderWidth: 1,
     width: '70%',
     height: verticalScale(50),
     marginTop: verticalScale(20),
@@ -425,10 +462,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   modal_button_text: {
     color: colors.text,
     fontSize: 25,
     fontWeight: 'bold',
+  },
+  modal_button_option: {
+    width: scale(120),
+    height: verticalScale(60),
+    borderRadius: 20,
+    backgroundColor: colors.background_primary_dark,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modal_button_textOption: {
+    fontSize: moderateScale(18),
+    color: 'white',
   },
 });

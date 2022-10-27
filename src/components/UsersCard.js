@@ -9,55 +9,77 @@ import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 export default function UsersCard({user, handleZoomModal}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.textCards}>
-        Nome:{' '}
-        {user.name.length > 12 ? `${user.name.slice(0, 12)}...` : user.name}
-      </Text>
-      <Text style={styles.textCards}>
-        Nome:{' '}
-        {user.endereco.length > 12
-          ? `${user.endereco.slice(0, 12)}...`
-          : user.endereco}
-      </Text>
-      <Text style={styles.textCards}>CEP: {user.cep}</Text>
-      <Text style={styles.textCards}>Ano: {user.nascimento}</Text>
-      <Text style={styles.textCards}>CPF: {MaskCPF(user.cpf.toString())}</Text>
-      <Text style={styles.textCards}>Tel: {CellPhoneMask(user.telefone)}</Text>
-      <Text style={styles.textCards}>
-        Email:{' '}
-        {user.email.length > 12 ? `${user.email.slice(0, 12)}...` : user.email}
-      </Text>
-      <TouchableOpacity
-        style={styles.zoomButton}
-        onPress={() => {
-          handleZoomModal(user);
-        }}>
-        <Text>Zoom</Text>
-      </TouchableOpacity>
+      <View style={styles.textCards_container}>
+        <Text style={styles.textCards}>
+          {user.name.length > 15 ? `${user.name.slice(0, 15)}...` : user.name}
+        </Text>
+        <Text style={styles.textCards}>
+          {user.endereco.length > 15
+            ? `${user.endereco.slice(0, 15)}...`
+            : user.endereco}
+        </Text>
+        <Text style={styles.textCards}>{user.cep}</Text>
+        <Text style={styles.textCards}>{user.nascimento}</Text>
+        <Text style={styles.textCards}>{user.cpf}</Text>
+        <Text style={styles.textCards}>{user.telefone}</Text>
+        <Text style={styles.textCards}>
+          {user.email.length > 15
+            ? `${user.email.slice(0, 15)}...`
+            : user.email}
+        </Text>
+      </View>
+      <View style={styles.zoomButton_container}>
+        <TouchableOpacity
+          style={styles.zoomButton}
+          onPress={() => {
+            handleZoomModal(user);
+          }}>
+          <Text style={styles.zoomButton_text}>Zoom</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: scale(135),
-    height: verticalScale(160),
+    width: scale(150),
+    height: verticalScale(220),
     backgroundColor: colors.background_primary_dark,
-    borderRadius: 15,
-    margin: moderateScale(12),
-    padding: moderateScale(12),
+    borderRadius: 25,
+    marginBottom: verticalScale(30),
+    marginRight: scale(15),
+  },
+  textCards_container: {
+    flex: 3,
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-start',
+    paddingLeft: scale(10),
+    paddingTop: verticalScale(5),
   },
   textCards: {
-    fontSize: scale(10),
+    fontSize: scale(15),
+    color: colors.text,
+    fontWeight: 'bold',
+  },
+  zoomButton_container: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   zoomButton: {
     width: '70%',
-    height: verticalScale(26),
+    height: verticalScale(30),
     backgroundColor: colors.background_primary,
-    borderRadius: 15,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: moderateScale(10),
+  },
+  zoomButton_text: {
+    fontSize: moderateScale(19),
+    color: colors.input,
+    fontWeight: 'bold',
   },
 });

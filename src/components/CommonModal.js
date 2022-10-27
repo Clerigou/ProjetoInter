@@ -53,12 +53,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    backgroundColor: colors.background_primary_dark,
+    backgroundColor: colors.background_primary,
   },
   error_titulo_text: {
-    color: colors.text,
     fontSize: 22,
     fontWeight: 'bold',
+    color: 'white',
   },
 
   error: {
@@ -86,6 +86,6 @@ const styles = StyleSheet.create({
   },
   buttonOk_text: {
     fontSize: 20,
-    color: colors.text,
+    color: 'white',
   },
 });

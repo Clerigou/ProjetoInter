@@ -151,7 +151,7 @@ export default Login = ({navigation}) => {
           hidden={true}
         />
         <CommonModal />
-        <TopBarGeral backButton={true} navigation={navigation} />
+        <TopBarGeral />
         <Animated.View style={styles.body}>
           <Animated.View style={[styles.titulo_container, {opacity: opacity}]}>
             <Text style={styles.titulo}> Acesse sua conta </Text>

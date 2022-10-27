@@ -195,15 +195,18 @@ const Home = ({navigation}) => {
           </Animated.View>
         </View>
       ) : (
-        // </View>
-        <View style={styles.buttons}>
-          <TouchableOpacity style={styles.botao}>
-            <Text
+        <View style={[styles.buttonContainer, {flex: 1}]}>
+          <Animated.View
+            style={[
+              styles.animated_view,
+              {transform: [{translateY: boxThree.y}]},
+            ]}>
+            <TouchableOpacity
               onPress={() => navigation.navigate('CadastroPetsLista')}
-              style={styles.botao_text}>
-              Lista de Pets
-            </Text>
-          </TouchableOpacity>
+              style={styles.botao}>
+              <Text style={styles.botao_text}>Lista de Pets</Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       )}
 
