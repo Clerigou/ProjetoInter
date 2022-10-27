@@ -22,7 +22,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore from '@react-native-firebase/firestore';
 import {AuthContext} from '../contexts/auth';
 import storage from '@react-native-firebase/storage';
-
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
@@ -149,6 +148,20 @@ const CadastroPetsLista = ({navigation}) => {
         </html>
       `;
 
+  if (loading) {
+    return (
+      <ImageBackground
+        source={require('../../assets/images/Segunda_tela_background.png')}
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <TopBarGeral backButton navigation={navigation} />
+        <ActivityIndicator size={'large'} color={'white'} />
+      </ImageBackground>
+    );
+  }
+
   return (
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
@@ -272,8 +285,12 @@ const CadastroPetsLista = ({navigation}) => {
               )}
             </View>
           ) : (
-            <View style={styles.modalZoom}>
-              <ActivityIndicator />
+            <View
+              style={[
+                styles.modalZoom,
+                {justifyContent: 'center', alignItems: 'center'},
+              ]}>
+              <ActivityIndicator size={'large'} color={'white'} />
             </View>
           )}
         </View>

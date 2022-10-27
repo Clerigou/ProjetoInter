@@ -29,7 +29,6 @@ const CadastroUsuarioLista = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const {opacity} = useContext(AuthContext);
 
-  console.log(data);
   const handleZoomModal = user => {
     setZoomModal(!zoomModal);
     setCurrentUser(user);
@@ -63,7 +62,17 @@ const CadastroUsuarioLista = ({navigation}) => {
   }, []);
 
   if (loading) {
-    return <ActivityIndicator />;
+    return (
+      <ImageBackground
+        source={require('../../assets/images/Segunda_tela_background.png')}
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <TopBarGeral backButton navigation={navigation} />
+        <ActivityIndicator size={'large'} color={'white'} />
+      </ImageBackground>
+    );
   }
 
   return (
