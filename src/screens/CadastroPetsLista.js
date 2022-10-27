@@ -37,8 +37,6 @@ const CadastroPetsLista = ({navigation}) => {
   const [url, setUrl] = useState();
 
   async function getUrl(pet) {
-    console.log('chamou url');
-
     const url = await storage()
       .ref(`Pets/${pet.name}`)
       .getDownloadURL()
@@ -69,12 +67,17 @@ const CadastroPetsLista = ({navigation}) => {
         });
 
         setData(pets);
-        setLoading(false);
       });
 
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
+
+  useEffect(() => {
+    if (data.length >= 1) {
+      setLoading(false);
+    }
+  }, [data]);
 
   const handlePets = pets => {
     setZoomModal(!zoomModal);
@@ -216,41 +219,41 @@ const CadastroPetsLista = ({navigation}) => {
                 </View>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Nome:</Text>{' '}
-                  {currentpets.name}
+                  {currentpets?.name}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Raça:</Text>{' '}
-                  {currentpets.raca}
+                  {currentpets?.raca}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Pelagem:</Text>{' '}
-                  {currentpets.pelagem}
+                  {currentpets?.pelagem}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Porte Físico:</Text>{' '}
-                  {currentpets.porte}
+                  {currentpets?.porte}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Data:</Text>{' '}
-                  {currentpets.data}
+                  {currentpets?.data}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Sexo:</Text>{' '}
-                  {currentpets.sexo}
+                  {currentpets?.sexo}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Idade:</Text>{' '}
-                  {currentpets.idade}
+                  {currentpets?.idade}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Vacinas:</Text>{' '}
-                  {currentpets.vacinas}
+                  {currentpets?.vacinas}
                 </Text>
                 <Text style={styles.modalText}>
                   <Text style={styles.textZoomModal}>Observações:</Text>{' '}
-                  {currentpets.obs.length > 20
-                    ? `${currentpets.obs.slice(0, 25)}...`
-                    : currentpets.obs}
+                  {currentpets?.obs?.length > 20
+                    ? `${currentpets?.obs?.slice(0, 25)}...`
+                    : currentpets?.obs}
                 </Text>
               </View>
               {savePDF && (

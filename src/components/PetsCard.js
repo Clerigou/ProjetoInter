@@ -18,10 +18,7 @@ export default function PetsCard({pets, handleZoomModal}) {
         <Text style={styles.textCards}>{pets.doencas}</Text>
         <Text style={styles.textCards}>{pets.vacinas}</Text>
         <Text style={styles.textCards}>
-          Obs:{' '}
-          {pets.obs.length > 16
-            ? `${pets.observacoes.slice(0, 17)}...`
-            : pets.obs}
+          Obs: {pets.obs.length > 16 ? `${pets.obs.slice(0, 17)}...` : pets.obs}
         </Text>
       </View>
 

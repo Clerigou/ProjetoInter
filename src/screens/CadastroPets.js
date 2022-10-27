@@ -1,5 +1,4 @@
 import React, {useEffect, useState, useContext} from 'react';
-import ImagePicker from 'react-native-image-crop-picker';
 import {ImageBackground, View, StyleSheet, Animated} from 'react-native';
 
 import TopBarGeral from '../components/TopBarGeral';

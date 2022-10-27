@@ -27,7 +27,6 @@ import firestore from '@react-native-firebase/firestore';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 import {TextInputMask} from 'react-native-masked-text';
 import CommonModal from '../components/CommonModal';
-import {loadPartialConfig} from '@babel/core';
 
 export default function CadastroUsers({navigation}) {
   const {opacity, setMsg, setCommonModal} = useContext(AuthContext);
@@ -142,8 +141,8 @@ export default function CadastroUsers({navigation}) {
   }
 
   function HandleRegister() {
+    setLoading(true);
     const validar = validate();
-    console.log(validar);
 
     if (validar.status) {
       createUser();

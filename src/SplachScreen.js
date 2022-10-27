@@ -1,6 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, ImageBackground, StyleSheet, View} from 'react-native';
+import {
+  Animated,
+  ImageBackground,
+  StyleSheet,
+  View,
+  StatusBar,
+} from 'react-native';
 import {verticalScale, scale} from 'react-native-size-matters';
+import {colors} from './commonStyles';
 
 export function WithSplashScreen({children, isAppReady}) {
   return (
@@ -153,6 +160,11 @@ export const Splash = ({isAppReady}) => {
     <Animated.View
       collapsable={false}
       style={[styles.container, {opacity: containerOpacity}]}>
+      <StatusBar
+        backgroundColor={colors.background_primary_dark}
+        barStyle={'light-content'}
+        hidden={true}
+      />
       <ImageBackground
         style={styles.container}
         source={require('../assets/images/Segunda_tela_background.png')}>
@@ -221,6 +233,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.background_primary,
   },
   container_um: {
     width: '100%',

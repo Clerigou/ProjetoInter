@@ -1,4 +1,3 @@
-import {transform} from '@babel/core';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
@@ -9,6 +8,7 @@ import {
   ImageBackground,
   Image,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
 import {scale, verticalScale} from 'react-native-size-matters';
 import {colors} from '../commonStyles';
@@ -21,6 +21,7 @@ import {CommonActions} from '@react-navigation/native';
 const Home = ({navigation}) => {
   const {user, opacity} = useContext(AuthContext);
   const [selected, setSelected] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [boxOne] = useState(new Animated.ValueXY({x: 0, y: -1000}));
   const [boxTwo] = useState(new Animated.ValueXY({x: 0, y: -1000}));
   const [boxThree] = useState(new Animated.ValueXY({x: 0, y: -1000}));
@@ -48,7 +49,7 @@ const Home = ({navigation}) => {
         duration: 1000,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(() => setLoading(false));
   }, []);
 
   function handlePress(rota) {
@@ -126,10 +127,19 @@ const Home = ({navigation}) => {
         hidden={true}
       />
       <TopBarGeral buttonRight={'logout'} logOut={logOut} />
-      <View style={styles.containerTextIntro}>
-        <Text style={styles.textUser}>Oi, {user.name}</Text>
-        <Text style={styles.textIntro}>Selecione uma {'\n'}atividade</Text>
-      </View>
+      <>
+        {!loading ? (
+          <View style={styles.containerTextIntro}>
+            <Text style={styles.textUser}>Oi, {user.name}</Text>
+            <Text style={styles.textIntro}>Selecione uma {'\n'}atividade</Text>
+          </View>
+        ) : (
+          <View
+            style={[styles.containerTextIntro, {justifyContent: 'flex-end'}]}>
+            <ActivityIndicator size={'large'} color={'white'} />
+          </View>
+        )}
+      </>
       {user.admin ? (
         <View style={styles.buttonContainer}>
           <Animated.View

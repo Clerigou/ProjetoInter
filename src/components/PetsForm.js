@@ -49,12 +49,13 @@ const dataSexo = [
 
 export default function PetsForm() {
   const [imagemEscolhida, setImagemEscolhida] = useState(null);
+
   const [visible, setVisible] = useState(false);
   const [nome, setNome] = useState();
   const [raca, setRaca] = useState('Não especificada');
   const [pelagem, setPelagem] = useState('Não especificada');
   const [porte, setPorte] = useState('Não especificado');
-  const [sexo, setSexo] = useState();
+  const [sexo, setSexo] = useState(null);
   const [idade, setIdade] = useState('Não especificada');
   const [doencas, setDoencas] = useState();
   const [vacinas, setVacinas] = useState();
@@ -126,6 +127,7 @@ export default function PetsForm() {
     setLoading(false);
   }
   const HandleRegister = () => {
+    setLoading(true);
     const validar = validate();
     if (validar.status) {
       registerPet();
@@ -251,21 +253,18 @@ export default function PetsForm() {
           placeholder="Nome"
           placeholderTextColor={colors.text}
           style={styles.inputs}
-          fontSize={18}
           onChangeText={text => setNome(text)}
         />
         <View style={styles.body_inputs_row}>
           <TextInput
             style={styles.inputs_row}
             placeholder="Raça"
-            fontSize={18}
             placeholderTextColor={colors.text}
             onChangeText={text => setRaca(text)}
           />
           <TextInput
             style={styles.inputs_row}
             placeholder="Pelagem"
-            fontSize={18}
             placeholderTextColor={colors.text}
             onChangeText={text => setPelagem(text)}
           />
@@ -274,14 +273,12 @@ export default function PetsForm() {
           <TextInput
             style={styles.inputs_row}
             placeholder="Porte Fisico"
-            fontSize={18}
             placeholderTextColor={colors.text}
             onChangeText={text => setPorte(text)}
           />
           <TextInput
             style={styles.inputs_row}
             placeholder="Idade"
-            fontSize={18}
             placeholderTextColor={colors.text}
             onChangeText={text => setIdade(text)}
           />
@@ -298,7 +295,7 @@ export default function PetsForm() {
             style={styles.inputs_row}
             placeholder="Data"
             placeholderTextColor={colors.text}
-            onChangeText={text => setNascimento(text)}
+            onChangeText={text => setData(text)}
             type={'datetime'}
             options={{
               format: 'DD/MM/YYYY',
@@ -310,14 +307,12 @@ export default function PetsForm() {
           <TextInput
             style={styles.inputs_row}
             placeholder="Doenças"
-            fontSize={18}
             placeholderTextColor={colors.text}
             onChangeText={text => setDoencas(text)}
           />
           <TextInput
             style={styles.inputs_row}
             placeholder="Vacinas"
-            fontSize={18}
             placeholderTextColor={colors.text}
             onChangeText={text => setVacinas(text)}
           />
@@ -388,7 +383,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: verticalScale(15),
     backgroundColor: colors.input,
-    fontSize: 20,
+    fontSize: 18,
     color: colors.text,
   },
   inputs_row: {
@@ -397,7 +392,7 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     paddingHorizontal: 10,
     backgroundColor: colors.input,
-    fontSize: 20,
+    fontSize: 18,
     color: colors.text,
   },
   input_big: {
