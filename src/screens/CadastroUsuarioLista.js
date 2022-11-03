@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Animated,
+  Modal,
 } from 'react-native';
 
 import {CellPhoneMask, CEPMask} from '../global/mask';
@@ -19,15 +20,17 @@ import ListEmpty from '../components/ListEmpty';
 import firestore from '@react-native-firebase/firestore';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AuthContext} from '../contexts/auth';
+import CommonModal from '../components/CommonModal';
 
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
 const CadastroUsuarioLista = ({navigation}) => {
   const [zoomModal, setZoomModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+  const [modal, setModal] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {opacity} = useContext(AuthContext);
+  const {opacity, user, setCommonModal, setMsg} = useContext(AuthContext);
 
   const handleZoomModal = user => {
     setZoomModal(!zoomModal);
@@ -61,6 +64,29 @@ const CadastroUsuarioLista = ({navigation}) => {
     return () => subscriber();
   }, []);
 
+  function showModal(obj) {
+    setMsg(obj);
+    setCommonModal(true);
+  }
+  const excluirUser = () => {
+    setModal(false);
+    setZoomModal(false);
+    setLoading(true);
+
+    firestore()
+      .collection('Users')
+      .doc(`${currentUser.email}`)
+      .delete()
+      .then(() => {
+        setLoading(false);
+
+        showModal({
+          titulo: 'Sucesso',
+          msg: 'Usuário excluído com sucesso!',
+        });
+      });
+  };
+
   if (loading) {
     return (
       <ImageBackground
@@ -69,7 +95,6 @@ const CadastroUsuarioLista = ({navigation}) => {
           styles.container,
           {justifyContent: 'center', alignItems: 'center'},
         ]}>
-        <TopBarGeral backButton navigation={navigation} />
         <ActivityIndicator size={'large'} color={'white'} />
       </ImageBackground>
     );
@@ -79,6 +104,79 @@ const CadastroUsuarioLista = ({navigation}) => {
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
+      <CommonModal />
+      <Modal visible={modal} transparent={true}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <View
+            style={{
+              width: '80%',
+              height: verticalScale(200),
+              backgroundColor: colors.input,
+              paddingHorizontal: scale(20),
+              paddingVertical: verticalScale(15),
+              borderRadius: 24,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: moderateScale(24),
+                color: 'white',
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}>
+              Tem certeza que deseja excluir este Usuário?
+            </Text>
+            <View
+              style={{
+                flex: 1,
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-evenly',
+              }}>
+              <TouchableOpacity
+                onPress={excluirUser}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: verticalScale(30),
+                  width: scale(100),
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                }}>
+                <Text
+                  style={{
+                    color: colors.background_primary,
+                    fontWeight: 'bold',
+                    fontSize: moderateScale(16),
+                  }}>
+                  Sim, excluir
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModal(false)}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: verticalScale(30),
+                  width: scale(100),
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                }}>
+                <Text
+                  style={{
+                    color: colors.background_primary,
+                    fontWeight: 'bold',
+                    fontSize: moderateScale(16),
+                  }}>
+                  Não, cancelar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <StatusBar hidden />
       <TopBarGeral backButton navigation={navigation} />
       <View style={styles.containerTextIntro}>
@@ -92,7 +190,7 @@ const CadastroUsuarioLista = ({navigation}) => {
             paddingHorizontal: scale(10),
             paddingTop: scale(8),
           }}
-          keyExtractor={item => item}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => (
             <UsersCard
               key={item}
@@ -117,11 +215,40 @@ const CadastroUsuarioLista = ({navigation}) => {
       {zoomModal && (
         <View style={styles.modalContainer}>
           <View style={styles.modalZoom}>
-            <TouchableOpacity
-              style={styles.closeIcon}
-              onPress={() => setZoomModal(false)}>
-              <MaterialIcons name="close-circle" size={29} />
-            </TouchableOpacity>
+            <View
+              style={{
+                width: '100%',
+                height: verticalScale(40),
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              {user.admin ? (
+                <TouchableOpacity
+                  onPress={() => setModal(true)}
+                  style={styles.closeIcon}>
+                  <MaterialIcons
+                    name="account-remove"
+                    size={moderateScale(42)}
+                    color={colors.background_primary}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <View />
+              )}
+
+              <TouchableOpacity
+                style={styles.closeIcon}
+                onPress={() => {
+                  setZoomModal(false);
+                }}>
+                <MaterialIcons
+                  name="close-circle"
+                  color={colors.background_primary}
+                  size={moderateScale(35)}
+                />
+              </TouchableOpacity>
+            </View>
             <View style={styles.contentValues}>
               <Text style={styles.modalText}>
                 <Text style={styles.textZoomModal}>Nome:</Text>{' '}

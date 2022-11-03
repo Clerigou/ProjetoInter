@@ -12,6 +12,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Animated,
+  Modal,
 } from 'react-native';
 
 import {colors} from '../commonStyles';
@@ -24,15 +25,18 @@ import {AuthContext} from '../contexts/auth';
 import storage from '@react-native-firebase/storage';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+import CommonModal from '../components/CommonModal';
 
 const CadastroPetsLista = ({navigation}) => {
   const [currentpets, setCurrentPets] = useState({});
+  const [modal, setModal] = useState(false);
+
   const [zoomModal, setZoomModal] = useState(false);
   const [savePDF, setSavePDF] = useState(true);
   const [pdfName, setPdfName] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {opacity} = useContext(AuthContext);
+  const {opacity, user, setCommonModal, setMsg} = useContext(AuthContext);
   const [zoomLoading, setZoomLoading] = useState(true);
   const [url, setUrl] = useState();
 
@@ -151,6 +155,29 @@ const CadastroPetsLista = ({navigation}) => {
         </html>
       `;
 
+  function showModal(obj) {
+    setMsg(obj);
+    setCommonModal(true);
+  }
+  const excluirPet = () => {
+    setModal(false);
+    setZoomModal(false);
+    setLoading(true);
+    setZoomLoading(true);
+
+    firestore()
+      .collection('Pets')
+      .doc(`${currentpets.name}`)
+      .delete()
+      .then(() => {
+        setLoading(false);
+        showModal({
+          titulo: 'Sucesso',
+          msg: 'Pet excluído com sucesso!',
+        });
+      });
+  };
+
   if (loading) {
     return (
       <ImageBackground
@@ -159,7 +186,6 @@ const CadastroPetsLista = ({navigation}) => {
           styles.container,
           {justifyContent: 'center', alignItems: 'center'},
         ]}>
-        <TopBarGeral backButton navigation={navigation} />
         <ActivityIndicator size={'large'} color={'white'} />
       </ImageBackground>
     );
@@ -169,6 +195,79 @@ const CadastroPetsLista = ({navigation}) => {
     <ImageBackground
       source={require('../../assets/images/Segunda_tela_background.png')}
       style={styles.container}>
+      <CommonModal />
+      <Modal visible={modal} transparent={true}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <View
+            style={{
+              width: '80%',
+              height: verticalScale(200),
+              backgroundColor: colors.input,
+              paddingHorizontal: scale(20),
+              paddingVertical: verticalScale(15),
+              borderRadius: 24,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: moderateScale(24),
+                color: 'white',
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}>
+              Tem certeza que deseja excluir este Pet?
+            </Text>
+            <View
+              style={{
+                flex: 1,
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-evenly',
+              }}>
+              <TouchableOpacity
+                onPress={excluirPet}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: verticalScale(30),
+                  width: scale(100),
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                }}>
+                <Text
+                  style={{
+                    color: colors.background_primary,
+                    fontWeight: 'bold',
+                    fontSize: moderateScale(16),
+                  }}>
+                  Sim, excluir
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModal(false)}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: verticalScale(30),
+                  width: scale(100),
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                }}>
+                <Text
+                  style={{
+                    color: colors.background_primary,
+                    fontWeight: 'bold',
+                    fontSize: moderateScale(16),
+                  }}>
+                  Não, cancelar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <StatusBar hidden />
       <TopBarGeral backButton navigation={navigation} />
       <View style={styles.containerTextIntro}>
@@ -182,8 +281,8 @@ const CadastroPetsLista = ({navigation}) => {
             paddingHorizontal: scale(10),
             paddingTop: scale(8),
           }}
-          keyExtractor={item => item}
-          renderItem={({item}) => (
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => (
             <PetsCard
               key={item}
               pets={item}
@@ -205,86 +304,126 @@ const CadastroPetsLista = ({navigation}) => {
         <View style={styles.modalContainer}>
           {!zoomLoading ? (
             <View style={styles.modalZoom}>
-              <TouchableOpacity
-                style={styles.closeIcon}
-                onPress={() => {
-                  setZoomModal(false);
-                  setZoomLoading(true);
+              <View
+                style={{
+                  width: '100%',
+                  height: verticalScale(40),
+                  justifyContent: 'space-between',
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                <MaterialIcons name="close-circle" size={29} />
-              </TouchableOpacity>
-              <View style={styles.contentValues}>
+                {user.admin ? (
+                  <TouchableOpacity
+                    onPress={() => setModal(true)}
+                    style={styles.closeIcon}>
+                    <MaterialIcons
+                      name="dog-side-off"
+                      size={moderateScale(36)}
+                      color={colors.background_primary}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <View />
+                )}
+
+                <TouchableOpacity
+                  style={styles.closeIcon}
+                  onPress={() => {
+                    setZoomModal(false);
+                    setZoomLoading(true);
+                  }}>
+                  <MaterialIcons
+                    name="close-circle"
+                    color={colors.background_primary}
+                    size={moderateScale(35)}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View
+                style={{
+                  alignItems: 'center',
+                }}>
                 <View style={styles.pictureContent}>
                   <Image style={styles.picture} source={{uri: url}} />
                 </View>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Nome:</Text>{' '}
-                  {currentpets?.name}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Raça:</Text>{' '}
-                  {currentpets?.raca}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Pelagem:</Text>{' '}
-                  {currentpets?.pelagem}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Porte Físico:</Text>{' '}
-                  {currentpets?.porte}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Data:</Text>{' '}
-                  {currentpets?.data}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Sexo:</Text>{' '}
-                  {currentpets?.sexo}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Idade:</Text>{' '}
-                  {currentpets?.idade}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Vacinas:</Text>{' '}
-                  {currentpets?.vacinas}
-                </Text>
-                <Text style={styles.modalText}>
-                  <Text style={styles.textZoomModal}>Observações:</Text>{' '}
-                  {currentpets?.obs?.length > 20
-                    ? `${currentpets?.obs?.slice(0, 25)}...`
-                    : currentpets?.obs}
-                </Text>
               </View>
+              <>
+                <View style={styles.contentValues}>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Nome:</Text>{' '}
+                    {currentpets?.name}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Raça:</Text>{' '}
+                    {currentpets?.raca}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Pelagem:</Text>{' '}
+                    {currentpets?.pelagem}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Porte Físico:</Text>{' '}
+                    {currentpets?.porte}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Data:</Text>{' '}
+                    {currentpets?.data}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Sexo:</Text>{' '}
+                    {currentpets?.sexo}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Idade:</Text>{' '}
+                    {currentpets?.idade}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Vacinas:</Text>{' '}
+                    {currentpets?.vacinas}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    <Text style={styles.textZoomModal}>Observações:</Text>{' '}
+                    {currentpets?.obs?.length > 45
+                      ? `${currentpets?.obs?.slice(0, 46)}...`
+                      : currentpets?.obs}
+                  </Text>
+                </View>
+              </>
               {savePDF && (
-                <TouchableOpacity
-                  style={styles.savePDF}
-                  onPress={() => {
-                    setSavePDF(false);
+                <View
+                  style={{
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  <Text>Salve em PDF</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.savePDF}
+                    onPress={() => {
+                      setSavePDF(false);
+                    }}>
+                    <Text>Salve em PDF</Text>
+                  </TouchableOpacity>
+                </View>
               )}
               {!savePDF && (
-                <KeyboardAvoidingView behavior="padding">
-                  <View style={styles.savePDF}>
-                    <TextInput
-                      style={{marginLeft: 5}}
-                      placeholder="Digite o nome do PDF"
-                      onChangeText={text => setPdfName(text)}
+                <View style={styles.savePDF}>
+                  <TextInput
+                    style={{marginLeft: 5}}
+                    placeholder="Digite o nome do PDF"
+                    onChangeText={text => setPdfName(text)}
+                  />
+                  <TouchableOpacity>
+                    <MaterialIcons
+                      name="check"
+                      size={scale(24)}
+                      color={'#6ffc03'}
+                      onPress={() => {
+                        onSetPDFName();
+                      }}
                     />
-                    <TouchableOpacity>
-                      <MaterialIcons
-                        name="check"
-                        size={scale(24)}
-                        color={'#6ffc03'}
-                        onPress={() => {
-                          onSetPDFName();
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </KeyboardAvoidingView>
+                  </TouchableOpacity>
+                </View>
               )}
             </View>
           ) : (
@@ -341,14 +480,16 @@ const styles = StyleSheet.create({
   },
   modalZoom: {
     width: '90%',
-    height: verticalScale(550),
+    height: verticalScale(600),
     backgroundColor: colors.background_secundary,
-    padding: moderateScale(24),
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(15),
     borderRadius: 24,
   },
   closeIcon: {
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    padding: moderateScale(5),
   },
   modalText: {
     fontSize: scale(18),
@@ -358,18 +499,15 @@ const styles = StyleSheet.create({
   contentValues: {
     flex: 1,
     alignSelf: 'center',
-    marginTop: moderateScale(20),
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   pictureContent: {
     width: scale(150),
     height: scale(150),
     borderRadius: moderateScale(80),
     backgroundColor: colors.background_primary_dark,
-    alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: moderateScale(20),
   },
   picture: {
     width: scale(135),
@@ -382,7 +520,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background_primary,
     borderRadius: 15,
     alignSelf: 'center',
-    marginTop: moderateScale(15),
     flexDirection: 'row',
     paddingLeft: moderateScale(10),
     paddingRight: moderateScale(10),

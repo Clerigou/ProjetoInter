@@ -22,8 +22,6 @@ import {colors} from '../commonStyles';
 import TopBarGeral from '../components/TopBarGeral';
 import CommonModal from '../components/CommonModal';
 
-import {showModal} from '../global/showModal';
-
 import {AuthContext} from '../contexts/auth';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 
@@ -106,10 +104,10 @@ export default Login = ({navigation}) => {
 
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(async () => {
+      .then(async res => {
         const user = await firestore()
           .collection('Users')
-          .doc(`${email}`)
+          .doc(`${res.user.email}`)
           .get()
 
           .then(res => {
